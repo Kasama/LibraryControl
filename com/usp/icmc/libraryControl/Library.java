@@ -26,6 +26,25 @@ public class Library {
         book.writeRentalLog(user);
     }
 
+    public boolean doesBookExist(String Author, String Title){
+        Optional<Book> b;
+        b = books.stream()
+                .filter(book -> book.getAuthor().equals(Author))
+                .filter(book -> book.getTitle().equals(Title))
+                .filter(Book::isAvailableForRental)
+                .findFirst();
+        return b.isPresent();
+    }
+
+    public boolean doesBookExist(int id){
+        Optional<Book> b;
+        b = books.stream()
+                .filter(book -> book.getId() == id)
+                .filter(Book::isAvailableForRental)
+                .findFirst();
+        return b.isPresent();
+    }
+
     public Book getBook(String Author, String Title){
         Optional<Book> b;
         b = books.stream()
@@ -35,7 +54,6 @@ public class Library {
                 .findFirst();
         if(!b.isPresent()) throw new noBookFoundException();
         return b.get();
-
     }
 
     public Book getBook(int id){
@@ -46,7 +64,6 @@ public class Library {
                 .findFirst();
         if(!b.isPresent()) throw new noBookFoundException();
         return b.get();
-
     }
 
 }
