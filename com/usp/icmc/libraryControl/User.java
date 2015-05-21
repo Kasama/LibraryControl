@@ -1,8 +1,6 @@
 package com.usp.icmc.libraryControl;
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class User {
 
@@ -13,12 +11,12 @@ public class User {
     private int id;
     private boolean rentalExpired = false;
     private int rentalExpiredDays = 0;
-    private Map<Book, Date> returnDates;
+    private ArrayList<Book> rentedBooks;
 
     public User(String name, int id) {
         this.name = name;
         this.id = id;
-        this.returnDates = new Hashtable<>();
+        this.rentedBooks = new ArrayList<>();
     }
 
     public boolean isRentalExpired() {
@@ -46,15 +44,15 @@ public class User {
     }
 
     public boolean canRentBook(){
-        return false;
+        return rentedBooks.size() < this.getMaxRentalBooks();
     }
 
-    public void rentBook(Book book) throws noBookFoundException{
-        throw new noBookFoundException(book);
+    public void rentBook(Book book) {
+        rentedBooks.add(book);
     }
 
-    public boolean hasBook(Book book){
-        return false;
+    public boolean hasBook(Book book) {
+        return rentedBooks.contains(book);
     }
 
     public void returnBook(Book book) throws noBookFoundException{
