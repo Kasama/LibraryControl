@@ -28,7 +28,7 @@ public class Book {
         this.borrowLog = new HashMap<>();
     }
 
-    public boolean canBeRentedByAnyone() {
+    public boolean canBeBorrowedByAnyone() {
         return canBeBorrowedByAnyone;
     }
 

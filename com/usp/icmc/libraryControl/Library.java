@@ -1,9 +1,11 @@
 package com.usp.icmc.libraryControl;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,6 +26,12 @@ public class Library {
         users = new ArrayList<>();
         blacklist = new HashMap<>();
 
+        loadFromDataDirectory(dataDirectory);
+
+    }
+
+    private void loadFromDataDirectory(String dataDirectory) {
+
         File file = new File(dataDirectory);
         File booksDirectory = new File(dataDirectory + "/books");
         File usersDirectory = new File(dataDirectory + "/users");
@@ -33,14 +41,14 @@ public class Library {
 
         if (file.exists() && !file.isDirectory())
             throw new IllegalArgumentException(
-                    "argument is not a directory path"
+                "argument is not a directory path"
             );
 
         if(
-                !booksFile.exists() ||
-                !blacklistFile.exists() ||
-                !usersFile.exists()
-        ){
+            !booksFile.exists() ||
+            !blacklistFile.exists() ||
+            !usersFile.exists()
+            ){
             try {
                 booksFile.createNewFile();
                 blacklistFile.createNewFile();
@@ -69,7 +77,7 @@ public class Library {
                 for (Book book : books){
                     long bookId = book.getId();
                     File bookFile = new File(
-                            booksDirectory.getPath()+"/"+bookId+"Log.csv"
+                        booksDirectory.getPath()+"/"+bookId+"Log.csv"
                     );
 
                     parseCSV(
@@ -101,7 +109,7 @@ public class Library {
                 for (User user : users){
                     long userId = user.getId();
                     File userFile = new File(
-                            usersDirectory.getPath()+"/"+userId+".csv"
+                        usersDirectory.getPath()+"/"+userId+".csv"
                     );
 
                     parseCSV(
@@ -125,6 +133,95 @@ public class Library {
                 e.printStackTrace();
                 // TODO proper exception handling
             }
+        }
+    }
+
+    public void storeToDataDirectory(String dataDirectory){
+
+        File file = new File(dataDirectory);
+        File booksDirectory = new File(dataDirectory + "/books");
+        File usersDirectory = new File(dataDirectory + "/users");
+        File booksFile = new File(dataDirectory + "/books.csv");
+        File usersFile = new File(dataDirectory + "/users.csv");
+        File blacklistFile = new File(dataDirectory + "/blacklist.csv");
+
+        CSVWriter csvWriter;
+
+        try {
+            csvWriter = new CSVWriter(new FileWriter(blacklistFile));
+            if (!blacklistFile.createNewFile()) {
+                blacklistFile.delete();
+                blacklistFile.createNewFile();
+            }
+            for (Map.Entry<User, Date> m : blacklist.entrySet()) {
+                User user = m.getKey();
+                Date date = m.getValue();
+                String[] nextLine;
+                nextLine = new String[2];
+                nextLine[0] = String.valueOf(user.getId());
+                nextLine[1] = String.valueOf(date.getTime());
+                csvWriter.writeNext(nextLine);
+            }
+
+            if (!usersFile.createNewFile()) {
+                usersFile.delete();
+                usersFile.createNewFile();
+            }
+            for (User user : users){
+                File userFile = new File(
+                    usersDirectory.getPath()+"/"+user.getId()+".csv"
+                );
+                if (!userFile.createNewFile()) {
+                    userFile.delete();
+                    userFile.createNewFile();
+                }
+                csvWriter = new CSVWriter(new FileWriter(userFile));
+                Book[] borrowedBooks;
+                borrowedBooks = (Book[]) user.getBorrowedBooks().toArray();
+                for (Book book : borrowedBooks) {
+                    String[] nextLine = new String[1];
+                    nextLine[0] = String.valueOf(book.getId());
+                    csvWriter.writeNext(nextLine);
+                }
+                csvWriter = new CSVWriter(new FileWriter(usersFile));
+                String[] nextLine = new String[4];
+                nextLine[0] = user.getName();
+                nextLine[1] = String.valueOf(user.getType());
+                nextLine[2] = String.valueOf(user.isBorrowExpired());
+                nextLine[3] = String.valueOf(user.getBorrowExpiredDays());
+                csvWriter.writeNext(nextLine);
+
+            }
+
+            for (Book book : books){
+                csvWriter = new CSVWriter(new FileWriter(
+                    new File(
+                        booksDirectory.getPath()+"/"+book.getId()+"Log.csv"
+                    )
+                ));
+                for (
+                    Map.Entry<User, Map.Entry<Date, Date>> m :
+                    book.getBorrowLog().entrySet()
+                ){
+                    String[] nextLine = new String[3];
+                    nextLine[0] = String.valueOf(m.getKey().getId());
+                    nextLine[2] = String
+                        .valueOf(m.getValue().getKey().getTime());
+                    nextLine[3] = String
+                        .valueOf(m.getValue().getValue().getTime());
+                    csvWriter.writeNext(nextLine);
+                }
+                csvWriter = new CSVWriter(new FileWriter(booksFile));
+                String[] nextLine = new String[3];
+                nextLine[0] = book.getAuthor();
+                nextLine[1] = book.getTitle();
+                nextLine[2] = String.valueOf(book.canBeBorrowedByAnyone());
+                csvWriter.writeNext(nextLine);
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

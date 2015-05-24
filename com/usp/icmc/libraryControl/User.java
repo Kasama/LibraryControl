@@ -91,4 +91,15 @@ public class User {
         throw new noBookFoundException(book);
 
     }
+    public ArrayList<Book> getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getType() {
+        return type;
+    }
 }
