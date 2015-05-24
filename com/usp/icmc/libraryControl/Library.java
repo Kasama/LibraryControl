@@ -12,12 +12,14 @@ import java.util.Optional;
 
 public class Library {
 
+    private ArrayList<User> users;
     private ArrayList<Book> books;
     private Map<User, Integer> blacklist;
 
     public Library(String dataDirectory) throws IllegalArgumentException {
 
         books = new ArrayList<>();
+        users = new ArrayList<>();
         blacklist = new HashMap<>();
 
         if (dataDirectory.endsWith("/"))
@@ -64,7 +66,13 @@ public class Library {
                 }
                 csvReader = new CSVReader(new FileReader(blacklistFile));
                 while ((tokens = csvReader.readNext()) != null){
-
+                    users.add(
+                            new User(
+                                    tokens[0],
+                                    Integer.parseInt(tokens[1]),
+                                    Integer.parseInt(tokens[2])
+                            )
+                    );
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class User {
 
-    private static final int STUDENT = 1;
-    private static final int PROFESSOR = 2;
-    private static final int COMMUNITY_MEMBER = 3;
+    public static final int STUDENT = 1;
+    public static final int PROFESSOR = 2;
+    public static final int COMMUNITY_MEMBER = 3;
 
     private int maxRentalBooks = 0;
     private int maxRentalDays = 0;
