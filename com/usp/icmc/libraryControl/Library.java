@@ -5,16 +5,18 @@ import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+@FunctionalInterface
+interface readableField{
+    void read(String[] tokens);
+}
 
 public class Library {
 
     private ArrayList<User> users;
     private ArrayList<Book> books;
-    private Map<User, Integer> blacklist;
+    private Map<User, Date> blacklist;
 
     public Library(String dataDirectory) throws IllegalArgumentException {
 
@@ -22,20 +24,17 @@ public class Library {
         users = new ArrayList<>();
         blacklist = new HashMap<>();
 
-        if (dataDirectory.endsWith("/"))
-            dataDirectory = dataDirectory
-                    .substring(0, dataDirectory.length() - 2);
-
         File file = new File(dataDirectory);
         File booksDirectory = new File(dataDirectory + "/books");
         File usersDirectory = new File(dataDirectory + "/users");
         File booksFile = new File(dataDirectory + "/books.csv");
         File usersFile = new File(dataDirectory + "/users.csv");
         File blacklistFile = new File(dataDirectory + "/blacklist.csv");
-        File[] allFiles;
 
         if (file.exists() && !file.isDirectory())
-            throw new IllegalArgumentException("Not a directory");
+            throw new IllegalArgumentException(
+                    "argument is not a directory path"
+            );
 
         if(
                 !booksFile.exists() ||
@@ -53,34 +52,105 @@ public class Library {
             }
         }else{
             try {
-                CSVReader csvReader = new CSVReader(new FileReader(booksFile));
-                String[] tokens;
-                while ((tokens = csvReader.readNext()) != null){
-                    books.add(
+                // reads books from the data file the entries are organized as
+                // "Author","Title","canBeBorrowedByAnyone"
+                parseCSV(
+                    booksFile,
+                    tokens ->
+                        addBook(
                             new Book(
-                                    tokens[0],
-                                    tokens[1],
-                                    tokens[2].equals("true")
+                                tokens[0],
+                                tokens[1],
+                                Boolean.getBoolean(tokens[2])
+                            )
+                        )
+                );
+                // fill in books borrow logs
+                for (Book book : books){
+                    long bookId = book.getId();
+                    File bookFile = new File(
+                            booksDirectory.getPath()+"/"+bookId+"Log.csv"
+                    );
+
+                    parseCSV(
+                        bookFile,
+                        tokens ->
+                            book.getRentalLog().put(
+                                getUser(Integer.parseInt(tokens[0])),
+                                new AbstractMap.SimpleEntry<>(
+                                    new Date(Long.parseLong(tokens[1])),
+                                    new Date(Long.parseLong(tokens[2]))
+                                )
                             )
                     );
                 }
-                csvReader = new CSVReader(new FileReader(blacklistFile));
-                while ((tokens = csvReader.readNext()) != null){
-                    users.add(
-                            new User(
-                                    tokens[0],
-                                    Integer.parseInt(tokens[1]),
-                                    Integer.parseInt(tokens[2])
-                            )
+                // read all users
+                parseCSV(
+                    usersFile,
+                    tokens -> {
+                        User user = new User(
+                            tokens[0],
+                            Integer.parseInt(tokens[1])
+                        );
+                        user.setRentalExpired(Boolean.getBoolean(tokens[2]));
+                        user.setRentalExpiredDays(Integer.parseInt(tokens[3]));
+                        addUser(user);
+                    }
+                );
+                // add borrowed books for each user
+                for (User user : users){
+                    long userId = user.getId();
+                    File userFile = new File(
+                            usersDirectory.getPath()+"/"+userId+".csv"
+                    );
+
+                    parseCSV(
+                        userFile,
+                        tokens ->
+                            user.rentBook(getBook(Integer.parseInt(tokens[0])))
                     );
                 }
+                // read blacklist
+                parseCSV(
+                    blacklistFile,
+                    tokens ->
+                        addToBlacklist(
+                            getUser(Integer.parseInt(tokens[0])),
+                            Long.parseLong(tokens[1])
+                        )
+                );
             } catch (IOException e) {
                 e.printStackTrace();
                 // TODO proper exception handling
             }
         }
 
+    }
 
+    private void parseCSV(File file, readableField rf)
+            throws IOException {
+
+        CSVReader csvReader = new CSVReader(new FileReader(file));
+        String[] tokens;
+        while ((tokens = csvReader.readNext()) != null){
+            rf.read(tokens);
+        }
+
+    }
+
+    private void addToBlacklist(User user, long time) {
+        if (blacklist.containsKey(user))
+            blacklist.replace(user, new Date(time));
+        else
+            blacklist.put(user, new Date(time));
+    }
+
+    private User getUser(int id) {
+        return users.get(id);
+    }
+
+    private void addUser(User user) {
+        users.add(user);
     }
 
     public void addBook(Book book) {

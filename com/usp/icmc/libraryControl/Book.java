@@ -1,5 +1,6 @@
 package com.usp.icmc.libraryControl;
 
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +14,16 @@ public class Book {
     private long id;
     private boolean availableForRental = false;
     private boolean canBeRentedByAnyone = false;
-    private Map<User, Map<Date, Date>> rentalLog;
+    private Map<User, Map.Entry<Date, Date>> rentalLog;
 
     public Book(String title, String author, boolean canBeRentedByAnyone) {
+        this(title, author, canBeRentedByAnyone, maxId++);
+    }
+
+    private Book(String title, String author, boolean canBeRentedByAnyone, long id){
         this.title = title;
         this.author = author;
-        this.id = Book.maxId++;
+        this.id = id;
         this.canBeRentedByAnyone = canBeRentedByAnyone;
         this.rentalLog = new HashMap<>();
     }
@@ -49,7 +54,6 @@ public class Book {
 
     public void writeRentalLog(User user){
 
-        Map<Date, Date> m = new HashMap<>();
         Date today;
         Date toReturn;
 
@@ -59,11 +63,15 @@ public class Book {
                 user.getMaxRentalDays()*24*60*60*1000
         );
 
-        m.put(today, toReturn);
+        Map.Entry<Date, Date> m =
+                new AbstractMap.SimpleEntry<>(today, toReturn);
         rentalLog.put(user, m);
 
     }
 
+    public Map<User, Map.Entry<Date, Date>> getRentalLog(){
+        return rentalLog;
+    }
 
     @Override
     public String toString() {

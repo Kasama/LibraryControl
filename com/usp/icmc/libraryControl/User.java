@@ -7,17 +7,22 @@ public class User {
     public static final int STUDENT = 1;
     public static final int PROFESSOR = 2;
     public static final int COMMUNITY_MEMBER = 3;
+    private static long maxId = 0;
 
     private int maxRentalBooks = 0;
     private int maxRentalDays = 0;
     private String name;
-    private int id;
+    private long id;
     private boolean rentalExpired = false;
     private int rentalExpiredDays = 0;
-    private int type = User.COMMUNITY_MEMBER;
+    private int type;
     private ArrayList<Book> rentedBooks;
 
-    public User(String name, int id, int type) {
+    public User(String name, int type){
+        this(name, maxId++, type);
+    }
+
+    private User(String name, long id, int type) {
         this.name = name;
         this.id = id;
         this.rentedBooks = new ArrayList<>();
@@ -43,6 +48,10 @@ public class User {
 
     public boolean isRentalExpired() {
         return rentalExpired;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setRentalExpired(boolean rentalExpired) {
