@@ -12,32 +12,32 @@ public class Book {
     private String title;
     private String author;
     private long id;
-    private boolean availableForRental = false;
-    private boolean canBeRentedByAnyone = false;
-    private Map<User, Map.Entry<Date, Date>> rentalLog;
+    private boolean availableForBorrow = false;
+    private boolean canBeBorrowedByAnyone = false;
+    private Map<User, Map.Entry<Date, Date>> borrowLog;
 
-    public Book(String title, String author, boolean canBeRentedByAnyone) {
-        this(title, author, canBeRentedByAnyone, maxId++);
+    public Book(String title, String author, boolean canBeBorrowedByAnyone) {
+        this(title, author, canBeBorrowedByAnyone, maxId++);
     }
 
-    private Book(String title, String author, boolean canBeRentedByAnyone, long id){
+    private Book(String title, String author, boolean canBeBorrowedByAnyone, long id){
         this.title = title;
         this.author = author;
         this.id = id;
-        this.canBeRentedByAnyone = canBeRentedByAnyone;
-        this.rentalLog = new HashMap<>();
+        this.canBeBorrowedByAnyone = canBeBorrowedByAnyone;
+        this.borrowLog = new HashMap<>();
     }
 
     public boolean canBeRentedByAnyone() {
-        return canBeRentedByAnyone;
+        return canBeBorrowedByAnyone;
     }
 
-    public boolean isAvailableForRental() {
-        return availableForRental;
+    public boolean isAvailableForBorrow() {
+        return availableForBorrow;
     }
 
-    public void setAvailableForRental(boolean availableForRental) {
-        this.availableForRental = availableForRental;
+    public void setAvailableForBorrow(boolean availableForBorrow) {
+        this.availableForBorrow = availableForBorrow;
     }
 
     public String getTitle() {
@@ -52,7 +52,7 @@ public class Book {
         return id;
     }
 
-    public void writeRentalLog(User user){
+    public void writeBorrowLog(User user){
 
         Date today;
         Date toReturn;
@@ -60,17 +60,17 @@ public class Book {
         today = TimeController.getDate();
         toReturn = new Date(
                 today.getTime() +
-                user.getMaxRentalDays()*24*60*60*1000
+                user.getMaxBorrowDays()*24*60*60*1000
         );
 
         Map.Entry<Date, Date> m =
                 new AbstractMap.SimpleEntry<>(today, toReturn);
-        rentalLog.put(user, m);
+        borrowLog.put(user, m);
 
     }
 
-    public Map<User, Map.Entry<Date, Date>> getRentalLog(){
-        return rentalLog;
+    public Map<User, Map.Entry<Date, Date>> getBorrowLog(){
+        return borrowLog;
     }
 
     @Override

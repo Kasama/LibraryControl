@@ -9,14 +9,14 @@ public class User {
     public static final int COMMUNITY_MEMBER = 3;
     private static long maxId = 0;
 
-    private int maxRentalBooks = 0;
-    private int maxRentalDays = 0;
+    private int maxBorrowBooks = 0;
+    private int maxBorrowDays = 0;
     private String name;
     private long id;
-    private boolean rentalExpired = false;
-    private int rentalExpiredDays = 0;
+    private boolean borrowExpired = false;
+    private int borrowExpiredDays = 0;
     private int type;
-    private ArrayList<Book> rentedBooks;
+    private ArrayList<Book> borrowedBooks;
 
     public User(String name, int type){
         this(name, maxId++, type);
@@ -25,65 +25,65 @@ public class User {
     private User(String name, long id, int type) {
         this.name = name;
         this.id = id;
-        this.rentedBooks = new ArrayList<>();
+        this.borrowedBooks = new ArrayList<>();
         this.type = type;
         switch (type) {
             case STUDENT:
-                maxRentalBooks = 4;
-                maxRentalDays = 15;
+                maxBorrowBooks = 4;
+                maxBorrowDays = 15;
                 break;
             case PROFESSOR:
-                maxRentalBooks = 6;
-                maxRentalDays = 60;
+                maxBorrowBooks = 6;
+                maxBorrowDays = 60;
                 break;
             case COMMUNITY_MEMBER:
-                maxRentalBooks = 2;
-                maxRentalDays = 15;
+                maxBorrowBooks = 2;
+                maxBorrowDays = 15;
                 break;
             default:
-                maxRentalBooks = 0;
-                maxRentalDays = 0;
+                maxBorrowBooks = 0;
+                maxBorrowDays = 0;
         }
     }
 
-    public boolean isRentalExpired() {
-        return rentalExpired;
+    public boolean isBorrowExpired() {
+        return borrowExpired;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setRentalExpired(boolean rentalExpired) {
-        this.rentalExpired = rentalExpired;
+    public void setBorrowExpired(boolean borrowExpired) {
+        this.borrowExpired = borrowExpired;
     }
 
-    public int getRentalExpiredDays() {
-        return rentalExpiredDays;
+    public int getBorrowExpiredDays() {
+        return borrowExpiredDays;
     }
 
-    public void setRentalExpiredDays(int rentalExpiredDays) {
-        this.rentalExpiredDays = rentalExpiredDays;
+    public void setBorrowExpiredDays(int borrowExpiredDays) {
+        this.borrowExpiredDays = borrowExpiredDays;
     }
 
-    public int getMaxRentalBooks() {
-        return maxRentalBooks;
+    public int getMaxBorrowBooks() {
+        return maxBorrowBooks;
     }
 
-    public int getMaxRentalDays() {
-        return maxRentalDays;
+    public int getMaxBorrowDays() {
+        return maxBorrowDays;
     }
 
-    public boolean canRentBook(){
-        return rentedBooks.size() < this.getMaxRentalBooks();
+    public boolean canBorrowBook(){
+        return borrowedBooks.size() < this.getMaxBorrowBooks();
     }
 
-    public void rentBook(Book book) {
-        rentedBooks.add(book);
+    public void borrowBook(Book book) {
+        borrowedBooks.add(book);
     }
 
     public boolean hasBook(Book book) {
-        return rentedBooks.contains(book);
+        return borrowedBooks.contains(book);
     }
 
     public void returnBook(Book book) throws noBookFoundException{

@@ -75,7 +75,7 @@ public class Library {
                     parseCSV(
                         bookFile,
                         tokens ->
-                            book.getRentalLog().put(
+                            book.getBorrowLog().put(
                                 getUser(Integer.parseInt(tokens[0])),
                                 new AbstractMap.SimpleEntry<>(
                                     new Date(Long.parseLong(tokens[1])),
@@ -92,8 +92,8 @@ public class Library {
                             tokens[0],
                             Integer.parseInt(tokens[1])
                         );
-                        user.setRentalExpired(Boolean.getBoolean(tokens[2]));
-                        user.setRentalExpiredDays(Integer.parseInt(tokens[3]));
+                        user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
+                        user.setBorrowExpiredDays(Integer.parseInt(tokens[3]));
                         addUser(user);
                     }
                 );
@@ -107,7 +107,9 @@ public class Library {
                     parseCSV(
                         userFile,
                         tokens ->
-                            user.rentBook(getBook(Integer.parseInt(tokens[0])))
+                            user.borrowBook(
+                                getBook(Integer.parseInt(tokens[0]))
+                            )
                     );
                 }
                 // read blacklist
@@ -157,13 +159,13 @@ public class Library {
         books.add(book);
     }
 
-    public void rentBook(User user, Book book) {
-        if (!user.canRentBook()) return;
+    public void borrowBook(User user, Book book) {
+        if (!user.canBorrowBook()) return;
         if (blacklist.containsKey(user)) return;
 
-        user.rentBook(book);
-        book.setAvailableForRental(false);
-        book.writeRentalLog(user);
+        user.borrowBook(book);
+        book.setAvailableForBorrow(false);
+        book.writeBorrowLog(user);
     }
 
     public boolean doesBookExist(String Author, String Title) {
@@ -171,7 +173,7 @@ public class Library {
         b = books.stream()
                 .filter(book -> book.getAuthor().equals(Author))
                 .filter(book -> book.getTitle().equals(Title))
-                .filter(Book::isAvailableForRental)
+                .filter(Book::isAvailableForBorrow)
                 .findFirst();
         return b.isPresent();
     }
@@ -180,7 +182,7 @@ public class Library {
         Optional<Book> b;
         b = books.stream()
                 .filter(book -> book.getId() == id)
-                .filter(Book::isAvailableForRental)
+                .filter(Book::isAvailableForBorrow)
                 .findFirst();
         return b.isPresent();
     }
@@ -190,7 +192,7 @@ public class Library {
         b = books.stream()
                 .filter(book -> book.getAuthor().equals(Author))
                 .filter(book -> book.getTitle().equals(Title))
-                .filter(Book::isAvailableForRental)
+                .filter(Book::isAvailableForBorrow)
                 .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
@@ -200,7 +202,7 @@ public class Library {
         Optional<Book> b;
         b = books.stream()
                 .filter(book -> book.getId() == id)
-                .filter(Book::isAvailableForRental)
+                .filter(Book::isAvailableForBorrow)
                 .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
