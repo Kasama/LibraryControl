@@ -10,21 +10,23 @@ import java.io.IOException;
 import java.util.*;
 
 @FunctionalInterface
-interface readableField{
+interface readableField {
     void read(String[] tokens);
 }
 
-public class Library {
+public class Library implements TimeEventListener {
 
     private ArrayList<User> users;
     private ArrayList<Book> books;
     private Map<User, Date> blacklist;
+    private TimeController timeController;
 
-    public Library(String dataDirectory) throws IllegalArgumentException {
+    public Library(String dataDirectory) {
 
         books = new ArrayList<>();
         users = new ArrayList<>();
         blacklist = new HashMap<>();
+        timeController = TimeController.getInstance();
 
         loadFromDataDirectory(dataDirectory);
 
@@ -44,11 +46,12 @@ public class Library {
                 "argument is not a directory path"
             );
 
-        if(
+        if (
             !booksFile.exists() ||
             !blacklistFile.exists() ||
             !usersFile.exists()
-            ){
+            )
+        {
             try {
                 booksFile.createNewFile();
                 blacklistFile.createNewFile();
@@ -58,7 +61,7 @@ public class Library {
                 e.printStackTrace();
                 // TODO proper exception handling
             }
-        }else{
+        } else {
             try {
                 // reads books from the data file the entries are organized as
                 // "Author","Title","canBeBorrowedByAnyone"
@@ -74,19 +77,20 @@ public class Library {
                         )
                 );
                 // fill in books borrow logs
-                for (Book book : books){
+                for (Book book : books) {
                     long bookId = book.getId();
                     File bookFile = new File(
-                        booksDirectory.getPath()+"/"+bookId+"Log.csv"
+                        booksDirectory.getPath() + "/" + bookId + "Log.csv"
                     );
 
                     parseCSV(
                         bookFile,
                         tokens ->
-                            book.getBorrowLog().put(
-                                getUser(Integer.parseInt(tokens[0])),
-                                new AbstractMap.SimpleEntry<>(
-                                    new Date(Long.parseLong(tokens[1])),
+                            book.getBorrowLog().add(
+                                new BorrowedLog(
+                                    getUser(
+                                        Integer.parseInt(tokens[0])
+                                    ), new Date(Long.parseLong(tokens[1])),
                                     new Date(Long.parseLong(tokens[2]))
                                 )
                             )
@@ -106,18 +110,20 @@ public class Library {
                     }
                 );
                 // add borrowed books for each user
-                for (User user : users){
+                for (User user : users) {
                     long userId = user.getId();
                     File userFile = new File(
-                        usersDirectory.getPath()+"/"+userId+".csv"
+                        usersDirectory.getPath() + "/" + userId + ".csv"
                     );
 
                     parseCSV(
                         userFile,
-                        tokens ->
-                            user.borrowBook(
-                                getBook(Integer.parseInt(tokens[0]))
-                            )
+                        tokens -> {
+                            if (doesBookExist(Integer.parseInt(tokens[0])))
+                                user.borrowBook(
+                                    getBook(Integer.parseInt(tokens[0]))
+                                );
+                        }
                     );
                 }
                 // read blacklist
@@ -136,7 +142,7 @@ public class Library {
         }
     }
 
-    public void storeToDataDirectory(String dataDirectory){
+    public void storeToDataDirectory(String dataDirectory) {
 
         File file = new File(dataDirectory);
         File booksDirectory = new File(dataDirectory + "/books");
@@ -167,9 +173,9 @@ public class Library {
                 usersFile.delete();
                 usersFile.createNewFile();
             }
-            for (User user : users){
+            for (User user : users) {
                 File userFile = new File(
-                    usersDirectory.getPath()+"/"+user.getId()+".csv"
+                    usersDirectory.getPath() + "/" + user.getId() + ".csv"
                 );
                 if (!userFile.createNewFile()) {
                     userFile.delete();
@@ -193,22 +199,25 @@ public class Library {
 
             }
 
-            for (Book book : books){
-                csvWriter = new CSVWriter(new FileWriter(
-                    new File(
-                        booksDirectory.getPath()+"/"+book.getId()+"Log.csv"
+            for (Book book : books) {
+                csvWriter = new CSVWriter(
+                    new FileWriter(
+                        new File(
+                            booksDirectory.getPath() + "/" + book.getId() +
+                            "Log.csv"
+                        )
                     )
-                ));
+                );
                 for (
-                    Map.Entry<User, Map.Entry<Date, Date>> m :
-                    book.getBorrowLog().entrySet()
-                ){
+                    BorrowedLog borrowedLog :
+                    book.getBorrowLog()
+                    ) {
                     String[] nextLine = new String[3];
-                    nextLine[0] = String.valueOf(m.getKey().getId());
+                    nextLine[0] = String.valueOf(borrowedLog.getUser().getId());
                     nextLine[2] = String
-                        .valueOf(m.getValue().getKey().getTime());
+                        .valueOf(borrowedLog.getBorrowedDate().getTime());
                     nextLine[3] = String
-                        .valueOf(m.getValue().getValue().getTime());
+                        .valueOf(borrowedLog.getReturnDate().getTime());
                     csvWriter.writeNext(nextLine);
                 }
                 csvWriter = new CSVWriter(new FileWriter(booksFile));
@@ -219,7 +228,6 @@ public class Library {
                 csvWriter.writeNext(nextLine);
             }
 
-
         } catch (IOException e) {
             e.printStackTrace();
             // TODO proper exception handling
@@ -227,12 +235,18 @@ public class Library {
 
     }
 
+    public void removeUserFromBlacklist(User user) {
+        blacklist.remove(user);
+        user.setBorrowExpired(false);
+        user.setBorrowExpiredDays(0);
+    }
+
     private void parseCSV(File file, readableField rf)
-            throws IOException {
+        throws IOException {
 
         CSVReader csvReader = new CSVReader(new FileReader(file));
         String[] tokens;
-        while ((tokens = csvReader.readNext()) != null){
+        while ((tokens = csvReader.readNext()) != null) {
             rf.read(tokens);
         }
 
@@ -243,6 +257,10 @@ public class Library {
             blacklist.replace(user, new Date(time));
         else
             blacklist.put(user, new Date(time));
+        user.setBorrowExpired(true);
+        user.setBorrowExpiredDays(
+            (int) timeController.getTimeInDays(new Date(time))
+        );
     }
 
     private User getUser(int id) {
@@ -266,32 +284,36 @@ public class Library {
         book.writeBorrowLog(user);
     }
 
+    public void returnBook(User user, Book book) {
+
+    }
+
     public boolean doesBookExist(String Author, String Title) {
         Optional<Book> b;
         b = books.stream()
-                .filter(book -> book.getAuthor().equals(Author))
-                .filter(book -> book.getTitle().equals(Title))
-                .filter(Book::isAvailableForBorrow)
-                .findFirst();
+            .filter(book -> book.getAuthor().equals(Author))
+            .filter(book -> book.getTitle().equals(Title))
+            .filter(Book::isAvailableForBorrow)
+            .findFirst();
         return b.isPresent();
     }
 
     public boolean doesBookExist(int id) {
         Optional<Book> b;
         b = books.stream()
-                .filter(book -> book.getId() == id)
-                .filter(Book::isAvailableForBorrow)
-                .findFirst();
+            .filter(book -> book.getId() == id)
+            .filter(Book::isAvailableForBorrow)
+            .findFirst();
         return b.isPresent();
     }
 
     public Book getBook(String Author, String Title) {
         Optional<Book> b;
         b = books.stream()
-                .filter(book -> book.getAuthor().equals(Author))
-                .filter(book -> book.getTitle().equals(Title))
-                .filter(Book::isAvailableForBorrow)
-                .findFirst();
+            .filter(book -> book.getAuthor().equals(Author))
+            .filter(book -> book.getTitle().equals(Title))
+            .filter(Book::isAvailableForBorrow)
+            .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
     }
@@ -299,11 +321,37 @@ public class Library {
     public Book getBook(int id) {
         Optional<Book> b;
         b = books.stream()
-                .filter(book -> book.getId() == id)
-                .filter(Book::isAvailableForBorrow)
-                .findFirst();
+            .filter(book -> book.getId() == id)
+            .filter(Book::isAvailableForBorrow)
+            .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
     }
 
+    @Override
+    public void handleTimeEvent() {
+        Date today = timeController.getDate();
+        for (User user : users) {
+            blacklist.put(
+                user,
+                timeController.decrementDate(
+                    blacklist.get(user)
+                )
+            );
+            Date zero = new Date(0);
+            if (blacklist.get(user).compareTo(zero) <= 0)
+                blacklist.remove(user);
+            // TODO think about it l8r
+            for (Book book : user.getBorrowedBooks()) {
+                int pos = book.getBorrowLog().size();
+                BorrowedLog log = book.getBorrowLog().get(pos);
+                Date returnDate = log.getReturnDate();
+                int retCmpToday = returnDate.compareTo(today);
+                if (retCmpToday > 0) {
+                    long difference = returnDate.getTime() - today.getTime();
+                    addToBlacklist(user, difference);
+                }
+            }
+        }
+    }
 }

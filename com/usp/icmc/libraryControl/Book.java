@@ -1,9 +1,7 @@
 package com.usp.icmc.libraryControl;
 
-import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Book {
 
@@ -14,18 +12,20 @@ public class Book {
     private long id;
     private boolean availableForBorrow = false;
     private boolean canBeBorrowedByAnyone = false;
-    private Map<User, Map.Entry<Date, Date>> borrowLog;
+    private ArrayList<BorrowedLog> borrowLog;
 
     public Book(String title, String author, boolean canBeBorrowedByAnyone) {
         this(title, author, canBeBorrowedByAnyone, maxId++);
     }
 
-    private Book(String title, String author, boolean canBeBorrowedByAnyone, long id){
+    private Book(
+        String title, String author, boolean canBeBorrowedByAnyone, long id
+    ) {
         this.title = title;
         this.author = author;
         this.id = id;
         this.canBeBorrowedByAnyone = canBeBorrowedByAnyone;
-        this.borrowLog = new HashMap<>();
+        this.borrowLog = new ArrayList<>();
     }
 
     public boolean canBeBorrowedByAnyone() {
@@ -52,41 +52,37 @@ public class Book {
         return id;
     }
 
-    public void writeBorrowLog(User user){
+    public void writeBorrowLog(User user) {
 
         Date today;
         Date toReturn;
 
-        today = TimeController.getDate();
+        today = TimeController.getInstance().getDate();
         toReturn = new Date(
-                today.getTime() +
-                user.getMaxBorrowDays()*24*60*60*1000
+            today.getTime() +
+            user.getMaxBorrowDays() * 24 * 60 * 60 * 1000
         );
 
-        Map.Entry<Date, Date> m =
-                new AbstractMap.SimpleEntry<>(today, toReturn);
-        borrowLog.put(user, m);
+        borrowLog.add(new BorrowedLog(user, today, toReturn));
 
     }
 
-    public Map<User, Map.Entry<Date, Date>> getBorrowLog(){
+    public ArrayList<BorrowedLog> getBorrowLog() {
         return borrowLog;
     }
 
     @Override
     public String toString() {
-        return "Book id: "+this.id+
-               "\nBook Title: "+this.title+
-               "\nBook Author: "+this.author+
+        return "Book id: " + this.id +
+               "\nBook Title: " + this.title +
+               "\nBook Author: " + this.author +
                "\n";
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Book){
-            return ((Book) obj).getTitle().equals(this.getTitle()) &
-                   ((Book) obj).getAuthor().equals(this.getAuthor());
-        }
-        return false;
+        return obj instanceof Book &&
+               ((Book) obj).getTitle().equals(this.getTitle()) &&
+               ((Book) obj).getAuthor().equals(this.getAuthor());
     }
 }
