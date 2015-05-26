@@ -80,4 +80,9 @@ public class TimeController {
 
         return c.getTime();
     }
+
+    public Date addTime(Date date, long time) {
+        Date d = new Date(date.getTime() + time);
+        return d;
+    }
 }

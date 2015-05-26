@@ -14,7 +14,6 @@ public class User {
     private String name;
     private long id;
     private boolean borrowExpired = false;
-    private int borrowExpiredDays = 0;
     private int type;
     private ArrayList<Book> borrowedBooks;
 
@@ -58,14 +57,6 @@ public class User {
         this.borrowExpired = borrowExpired;
     }
 
-    public int getBorrowExpiredDays() {
-        return borrowExpiredDays;
-    }
-
-    public void setBorrowExpiredDays(int borrowExpiredDays) {
-        this.borrowExpiredDays = borrowExpiredDays;
-    }
-
     public int getMaxBorrowBooks() {
         return maxBorrowBooks;
     }
@@ -86,9 +77,9 @@ public class User {
         return borrowedBooks.contains(book);
     }
 
-    public void returnBook(Book book) throws noBookFoundException{
+    public void returnBook(Book book) {
 
-        throw new noBookFoundException(book);
+        borrowedBooks.remove(book);
 
     }
     public ArrayList<Book> getBorrowedBooks() {

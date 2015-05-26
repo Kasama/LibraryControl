@@ -9,11 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-@FunctionalInterface
-interface readableField {
-    void read(String[] tokens);
-}
-
 public class Library implements TimeEventListener {
 
     private ArrayList<User> users;
@@ -105,7 +100,6 @@ public class Library implements TimeEventListener {
                             Integer.parseInt(tokens[1])
                         );
                         user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
-                        user.setBorrowExpiredDays(Integer.parseInt(tokens[3]));
                         addUser(user);
                     }
                 );
@@ -194,7 +188,6 @@ public class Library implements TimeEventListener {
                 nextLine[0] = user.getName();
                 nextLine[1] = String.valueOf(user.getType());
                 nextLine[2] = String.valueOf(user.isBorrowExpired());
-                nextLine[3] = String.valueOf(user.getBorrowExpiredDays());
                 csvWriter.writeNext(nextLine);
 
             }
@@ -238,7 +231,6 @@ public class Library implements TimeEventListener {
     public void removeUserFromBlacklist(User user) {
         blacklist.remove(user);
         user.setBorrowExpired(false);
-        user.setBorrowExpiredDays(0);
     }
 
     private void parseCSV(File file, readableField rf)
@@ -258,9 +250,6 @@ public class Library implements TimeEventListener {
         else
             blacklist.put(user, new Date(time));
         user.setBorrowExpired(true);
-        user.setBorrowExpiredDays(
-            (int) timeController.getTimeInDays(new Date(time))
-        );
     }
 
     private User getUser(int id) {
@@ -268,16 +257,18 @@ public class Library implements TimeEventListener {
     }
 
     private void addUser(User user) {
-        users.add(user);
+        if(!users.contains(user))
+            users.add(user);
     }
 
     public void addBook(Book book) {
-        books.add(book);
+        if (!books.contains(book))
+            books.add(book);
     }
 
     public void borrowBook(User user, Book book) {
         if (!user.canBorrowBook()) return;
-        if (blacklist.containsKey(user)) return;
+        if (isBlacklisted(user)) return;
 
         user.borrowBook(book);
         book.setAvailableForBorrow(false);
@@ -285,7 +276,10 @@ public class Library implements TimeEventListener {
     }
 
     public void returnBook(User user, Book book) {
-
+        if (user.hasBook(book)) {
+            user.returnBook(book);
+            book.setAvailableForBorrow(true);
+        }
     }
 
     public boolean doesBookExist(String Author, String Title) {
@@ -332,16 +326,8 @@ public class Library implements TimeEventListener {
     public void handleTimeEvent() {
         Date today = timeController.getDate();
         for (User user : users) {
-            blacklist.put(
-                user,
-                timeController.decrementDate(
-                    blacklist.get(user)
-                )
-            );
-            Date zero = new Date(0);
-            if (blacklist.get(user).compareTo(zero) <= 0)
-                blacklist.remove(user);
-            // TODO think about it l8r
+            if (blacklist.get(user).before(today))
+                removeUserFromBlacklist(user);
             for (Book book : user.getBorrowedBooks()) {
                 int pos = book.getBorrowLog().size();
                 BorrowedLog log = book.getBorrowLog().get(pos);
@@ -349,9 +335,24 @@ public class Library implements TimeEventListener {
                 int retCmpToday = returnDate.compareTo(today);
                 if (retCmpToday > 0) {
                     long difference = returnDate.getTime() - today.getTime();
-                    addToBlacklist(user, difference);
+                    addBlacklistTime(user, difference);
                 }
             }
         }
+    }
+
+    private void addBlacklistTime(User user, long time) {
+        if (isBlacklisted(user)){
+            blacklist.replace(
+                user,
+                timeController.addTime(blacklist.get(user), time)
+            );
+        }else {
+            addToBlacklist(user, time);
+        }
+    }
+
+    private boolean isBlacklisted(User user) {
+        return blacklist.containsKey(user);
     }
 }
