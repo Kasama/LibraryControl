@@ -129,14 +129,13 @@ public class startSceneController implements Initializable {
                     if (l != 5) {
                         Alert confirmCreateNewLibrary = new Alert(
                             Alert.AlertType.CONFIRMATION,
-                            "The selected library does not exist, do you want" +
-                            " to create a new one?",
+                            "Do you want to create a new one?",
                             ButtonType.NO,
                             ButtonType.YES
                         );
-                        confirmCreateNewLibrary.setTitle("Library exists");
+                        confirmCreateNewLibrary.setTitle("Library does not exists");
                         confirmCreateNewLibrary
-                            .setHeaderText("Library exists!");
+                            .setHeaderText("Library does not exists!");
                         Optional<ButtonType> selection
                             = confirmCreateNewLibrary.showAndWait();
                         if (!selection.isPresent() ||
