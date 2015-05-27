@@ -69,8 +69,8 @@ public class startSceneController implements Initializable {
         System.out.println(selectedDirectory.getPath());
         try {
             libraryList.getItems().add(selectedDirectory.getPath());
-        } catch (Exception e1) {
-            System.out.println("fodeu");
+        } catch (Exception ignored) {
+            // TODO proper catching
         }
         updateLibrariesFile();
     }
