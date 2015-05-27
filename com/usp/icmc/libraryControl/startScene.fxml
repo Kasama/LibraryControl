@@ -11,7 +11,7 @@
    <children>
       <HBox alignment="CENTER">
          <children>
-            <Label text="Library Control">
+            <Label text="Library Controller">
                <font>
                   <Font size="45.0" />
                </font>

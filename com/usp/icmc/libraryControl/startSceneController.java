@@ -7,9 +7,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileReader;
@@ -72,20 +76,19 @@ public class startSceneController implements Initializable {
     }
 
     private void updateLibrariesFile() {
+        System.out.println("entrei");
         File file = new File("libraryList.csv");
-        for (String s : libraryList.getItems()) {
-            String[] nextLine = new String[1];
-            nextLine[0] = s;
-            try {
-                if (!file.createNewFile()) {
-                    file.delete();
-                    file.createNewFile();
-                }
-                CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
+        try {
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
+            for (String s : libraryList.getItems()) {
+                System.out.println("The line is:" + s);
+                String[] nextLine = new String[1];
+                nextLine[0] = s;
                 csvWriter.writeNext(nextLine);
-            } catch (IOException e) {
-                e.printStackTrace();
+                csvWriter.flush();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -97,7 +100,7 @@ public class startSceneController implements Initializable {
     }
 
     @FXML
-    private void loadLibrary() {
+    private void loadLibrary(Event e) {
         String path = null;
         path = libraryList.getSelectionModel().getSelectedItem();
         File file = null;
@@ -138,18 +141,34 @@ public class startSceneController implements Initializable {
                             .setHeaderText("Library exists!");
                         Optional<ButtonType> selection
                             = confirmCreateNewLibrary.showAndWait();
-                        if (selection.isPresent() &&
-                            selection.get().equals(ButtonType.YES))
-                        {
-                            java.sql.Date d = java.sql.Date.valueOf(
-                                datePicker.getValue()
-                            );
-                            Date date = new Date(d.getTime());
-                            TimeController timeController = TimeController
-                                .getInstance();
-                            timeController.setDate(date);
-                            // TODO skip to next scene
-                        }
+                        if (!selection.isPresent() ||
+                            selection.get().equals(ButtonType.NO))
+                            return;
+                    }
+                    java.sql.Date d = java.sql.Date.valueOf(
+                        datePicker.getValue()
+                    );
+                    Date date = new Date(d.getTime());
+                    TimeController timeController = TimeController
+                        .getInstance();
+                    timeController.setDate(date);
+                    FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("mainScene.fxml")
+                    );
+                    Parent root;
+                    Stage stage;
+                    try {
+                        root = loader.load();
+                        stage = (
+                            (Stage) ((Button) e.getSource()).getScene()
+                                .getWindow()
+                        );
+                        mainSceneController controller = loader
+                            .getController();
+                        controller.setLibrary(new Library(path));
+                        stage.setScene(new Scene(root));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }

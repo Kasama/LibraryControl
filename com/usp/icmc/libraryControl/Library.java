@@ -48,10 +48,11 @@ public class Library implements TimeEventListener {
             )
         {
             try {
+                usersFile.createNewFile();
                 booksFile.createNewFile();
                 blacklistFile.createNewFile();
-                booksDirectory.createNewFile();
-                usersDirectory.createNewFile();
+                booksDirectory.mkdir();
+                usersDirectory.mkdir();
             } catch (IOException e) {
                 e.printStackTrace();
                 // TODO proper exception handling
