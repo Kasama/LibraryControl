@@ -34,11 +34,6 @@ public class mainSceneController implements Initializable {
 
     @FXML
     private void addNewUser(){
-        String name = searchBox.getText();
-        User user = new User(name, User.PROFESSOR);
-        library.addUser(user);
-        System.out.println(library.getUser(user.getId()).getName());
-        library.storeToDataDirectory(library.getDataDirectory());
     }
 
     @FXML

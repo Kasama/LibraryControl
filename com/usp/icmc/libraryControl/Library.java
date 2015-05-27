@@ -3,7 +3,10 @@ package com.usp.icmc.libraryControl;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Library implements TimeEventListener {
@@ -313,11 +316,12 @@ public class Library implements TimeEventListener {
         return b.get();
     }
 
-    public Book getBook(int id) {
+    public Book getBook(long id) {
         Optional<Book> b;
-        b = books.stream()
+        b = books
+            .stream()
             .filter(book -> book.getId() == id)
-            .filter(Book::isAvailableForBorrow)
+//            .filter(Book::isAvailableForBorrow)
             .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
@@ -360,4 +364,5 @@ public class Library implements TimeEventListener {
     public String getDataDirectory() {
         return dataDirectory;
     }
+
 }
