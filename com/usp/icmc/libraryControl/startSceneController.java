@@ -164,6 +164,8 @@ public class startSceneController implements Initializable {
                             .getController();
                         controller.setLibrary(new Library(path));
                         stage.setScene(new Scene(root));
+                        stage.setHeight(600);
+                        stage.setWidth(800);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

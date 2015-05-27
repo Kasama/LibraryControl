@@ -3,10 +3,7 @@ package com.usp.icmc.libraryControl;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Library implements TimeEventListener {
@@ -15,6 +12,7 @@ public class Library implements TimeEventListener {
     private ArrayList<Book> books;
     private Map<User, Date> blacklist;
     private TimeController timeController;
+    private String dataDirectory;
 
     public Library(String dataDirectory) {
 
@@ -22,6 +20,7 @@ public class Library implements TimeEventListener {
         users = new ArrayList<>();
         blacklist = new HashMap<>();
         timeController = TimeController.getInstance();
+        this.dataDirectory = dataDirectory;
 
         loadFromDataDirectory(dataDirectory);
 
@@ -38,7 +37,7 @@ public class Library implements TimeEventListener {
 
         if (file.exists() && !file.isDirectory())
             throw new IllegalArgumentException(
-                "argument is not a directory path"
+                "argument is not a dataDirectory path"
             );
 
         if (
@@ -102,6 +101,7 @@ public class Library implements TimeEventListener {
                         );
                         user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
                         addUser(user);
+                        System.out.println(getUser(user.getId()).getName());
                     }
                 );
                 // add borrowed books for each user
@@ -150,10 +150,6 @@ public class Library implements TimeEventListener {
 
         try {
             csvWriter = new CSVWriter(new FileWriter(blacklistFile));
-            if (!blacklistFile.createNewFile()) {
-                blacklistFile.delete();
-                blacklistFile.createNewFile();
-            }
             for (Map.Entry<User, Date> m : blacklist.entrySet()) {
                 User user = m.getKey();
                 Date date = m.getValue();
@@ -163,38 +159,33 @@ public class Library implements TimeEventListener {
                 nextLine[1] = String.valueOf(date.getTime());
                 csvWriter.writeNext(nextLine);
             }
+            csvWriter.flush();
 
-            if (!usersFile.createNewFile()) {
-                usersFile.delete();
-                usersFile.createNewFile();
-            }
+            csvWriter = new CSVWriter(new FileWriter(usersFile));
             for (User user : users) {
                 File userFile = new File(
                     usersDirectory.getPath() + "/" + user.getId() + ".csv"
                 );
-                if (!userFile.createNewFile()) {
-                    userFile.delete();
-                    userFile.createNewFile();
-                }
-                csvWriter = new CSVWriter(new FileWriter(userFile));
-                Book[] borrowedBooks;
-                borrowedBooks = (Book[]) user.getBorrowedBooks().toArray();
+                CSVWriter writer = new CSVWriter(new FileWriter(userFile));
+                ArrayList<Book> borrowedBooks;
+                borrowedBooks = user.getBorrowedBooks();
                 for (Book book : borrowedBooks) {
                     String[] nextLine = new String[1];
                     nextLine[0] = String.valueOf(book.getId());
-                    csvWriter.writeNext(nextLine);
+                    writer.writeNext(nextLine);
                 }
-                csvWriter = new CSVWriter(new FileWriter(usersFile));
+                writer.flush();
                 String[] nextLine = new String[4];
                 nextLine[0] = user.getName();
                 nextLine[1] = String.valueOf(user.getType());
                 nextLine[2] = String.valueOf(user.isBorrowExpired());
                 csvWriter.writeNext(nextLine);
-
             }
+            csvWriter.flush();
 
+            csvWriter = new CSVWriter(new FileWriter(booksFile));
             for (Book book : books) {
-                csvWriter = new CSVWriter(
+                CSVWriter writer = new CSVWriter(
                     new FileWriter(
                         new File(
                             booksDirectory.getPath() + "/" + book.getId() +
@@ -212,15 +203,16 @@ public class Library implements TimeEventListener {
                         .valueOf(borrowedLog.getBorrowedDate().getTime());
                     nextLine[3] = String
                         .valueOf(borrowedLog.getReturnDate().getTime());
-                    csvWriter.writeNext(nextLine);
+                    writer.writeNext(nextLine);
                 }
-                csvWriter = new CSVWriter(new FileWriter(booksFile));
+                writer.flush();
                 String[] nextLine = new String[3];
                 nextLine[0] = book.getAuthor();
                 nextLine[1] = book.getTitle();
                 nextLine[2] = String.valueOf(book.canBeBorrowedByAnyone());
                 csvWriter.writeNext(nextLine);
             }
+            csvWriter.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -253,11 +245,19 @@ public class Library implements TimeEventListener {
         user.setBorrowExpired(true);
     }
 
-    private User getUser(int id) {
-        return users.get(id);
+    public User getUser(long id) {
+        Optional<User> u;
+        u = users
+            .stream()
+            .parallel()
+            .filter(
+                uid -> uid.getId() == id
+            )
+            .findFirst();
+        return u.get();
     }
 
-    private void addUser(User user) {
+    public void addUser(User user) {
         if(!users.contains(user))
             users.add(user);
     }
@@ -355,5 +355,9 @@ public class Library implements TimeEventListener {
 
     private boolean isBlacklisted(User user) {
         return blacklist.containsKey(user);
+    }
+
+    public String getDataDirectory() {
+        return dataDirectory;
     }
 }

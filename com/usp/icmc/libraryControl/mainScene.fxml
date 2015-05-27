@@ -47,12 +47,12 @@
                               </TableView>
                               <HBox>
                                  <children>
-                                    <Button mnemonicParsing="false" text="+">
+                                    <Button mnemonicParsing="false" onAction="#addNewBook" text="+">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" text="-">
+                                    <Button mnemonicParsing="false" onAction="#removeBook" text="-">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -62,7 +62,7 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </ComboBox>
-                                    <Button mnemonicParsing="false" text="Lend">
+                                    <Button mnemonicParsing="false" onAction="#borrowToUser" text="Lend">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -81,7 +81,7 @@
                      <children>
                         <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <TextField alignment="TOP_LEFT" promptText="Search Box">
+                              <TextField fx:id="searchBox" alignment="TOP_LEFT" promptText="Search Box">
                                  <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
@@ -100,12 +100,12 @@
                               </TableView>
                               <HBox>
                                  <children>
-                                    <Button mnemonicParsing="false" text="+">
+                                    <Button mnemonicParsing="false" onAction="#addNewUser" text="+">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" text="-">
+                                    <Button mnemonicParsing="false" onAction="#removeUser" text="-">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -115,7 +115,7 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </ComboBox>
-                                    <Button mnemonicParsing="false" text="Return">
+                                    <Button mnemonicParsing="false" onAction="#returnBook" text="Return">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
