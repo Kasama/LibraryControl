@@ -76,12 +76,10 @@ public class startSceneController implements Initializable {
     }
 
     private void updateLibrariesFile() {
-        System.out.println("entrei");
         File file = new File("libraryList.csv");
         try {
             CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
             for (String s : libraryList.getItems()) {
-                System.out.println("The line is:" + s);
                 String[] nextLine = new String[1];
                 nextLine[0] = s;
                 csvWriter.writeNext(nextLine);
