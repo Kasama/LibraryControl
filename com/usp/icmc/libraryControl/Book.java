@@ -18,11 +18,12 @@ public class Book {
         this(title, author, canBeBorrowedByAnyone, maxId++);
     }
 
-    private Book(
+    public Book(
         String title, String author, boolean canBeBorrowedByAnyone, long id
     ) {
         this.title = title;
         this.author = author;
+        if (id >= maxId) maxId = id + 1;
         this.id = id;
         this.canBeBorrowedByAnyone = canBeBorrowedByAnyone;
         this.borrowLog = new ArrayList<>();

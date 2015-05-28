@@ -21,8 +21,9 @@ public class User {
         this(name, maxId++, type);
     }
 
-    private User(String name, long id, int type) {
+    public User(String name, long id, int type) {
         this.name = name;
+        if (id >= maxId) maxId = id + 1;
         this.id = id;
         this.borrowedBooks = new ArrayList<>();
         this.type = type;

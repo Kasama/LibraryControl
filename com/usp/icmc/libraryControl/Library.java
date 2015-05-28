@@ -70,7 +70,8 @@ public class Library implements TimeEventListener {
                             new Book(
                                 tokens[0],
                                 tokens[1],
-                                Boolean.getBoolean(tokens[2])
+                                Boolean.getBoolean(tokens[2]),
+                                Long.parseLong(tokens[3])
                             )
                         )
                 );
@@ -100,6 +101,7 @@ public class Library implements TimeEventListener {
                     tokens -> {
                         User user = new User(
                             tokens[0],
+                            Long.parseLong(tokens[3]),
                             Integer.parseInt(tokens[1])
                         );
                         user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
@@ -181,6 +183,7 @@ public class Library implements TimeEventListener {
                 nextLine[0] = user.getName();
                 nextLine[1] = String.valueOf(user.getType());
                 nextLine[2] = String.valueOf(user.isBorrowExpired());
+                nextLine[3] = String.valueOf(user.getId());
                 csvWriter.writeNext(nextLine);
             }
             csvWriter.flush();
@@ -208,10 +211,11 @@ public class Library implements TimeEventListener {
                     writer.writeNext(nextLine);
                 }
                 writer.flush();
-                String[] nextLine = new String[3];
+                String[] nextLine = new String[4];
                 nextLine[0] = book.getAuthor();
                 nextLine[1] = book.getTitle();
                 nextLine[2] = String.valueOf(book.canBeBorrowedByAnyone());
+                nextLine[3] = String.valueOf(book.getId());
                 csvWriter.writeNext(nextLine);
             }
             csvWriter.flush();
