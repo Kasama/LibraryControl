@@ -1,12 +1,13 @@
 package com.usp.icmc.libraryControl;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
 
-public class newUserDialog extends Dialog {
+import java.io.IOException;
+
+public class newUserDialog extends Dialog<User> {
 
     @FXML
     private ToggleGroup typeSelection;
@@ -18,6 +19,37 @@ public class newUserDialog extends Dialog {
     private RadioButton radioStudent;
     @FXML
     private RadioButton radioCommunityMember;
+
+    public newUserDialog() {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("newBookDialog.fxml")
+        );
+        loader.setController(this);
+
+        ButtonType buttonCancel = new ButtonType(
+            "Cancel", ButtonBar.ButtonData.CANCEL_CLOSE
+        );
+        ButtonType buttonOK = new ButtonType(
+            "Confirm", ButtonBar.ButtonData.OK_DONE
+        );
+        Parent root;
+        try {
+            root = loader.load();
+            this.getDialogPane().setContent(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.getDialogPane().getButtonTypes().addAll(
+            buttonCancel, buttonOK
+        );
+        this.setResultConverter(
+            param ->
+                param.equals(buttonOK) ?
+                new User(
+                    this.getUserName(), this.getOption()
+                ) : null
+        );
+    }
 
     public String getUserName() {
         return userName.getText();
