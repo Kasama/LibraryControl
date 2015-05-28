@@ -1,4 +1,4 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.library;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class Library implements TimeEventListener {
+public class Library implements Observer {
 
     private ArrayList<User> users;
     private ArrayList<Book> books;
@@ -23,6 +23,7 @@ public class Library implements TimeEventListener {
         users = new ArrayList<>();
         blacklist = new HashMap<>();
         timeController = TimeController.getInstance();
+        timeController.addObserver(this);
         this.dataDirectory = dataDirectory;
 
         loadFromDataDirectory(dataDirectory);
@@ -232,7 +233,7 @@ public class Library implements TimeEventListener {
         user.setBorrowExpired(false);
     }
 
-    private void parseCSV(File file, readableField rf)
+    private void parseCSV(File file, ReadableField rf)
         throws IOException {
 
         CSVReader csvReader = new CSVReader(new FileReader(file));
@@ -330,25 +331,6 @@ public class Library implements TimeEventListener {
         return b.get();
     }
 
-    @Override
-    public void handleTimeEvent() {
-        Date today = timeController.getDate();
-        for (User user : users) {
-            if (blacklist.get(user).before(today))
-                removeUserFromBlacklist(user);
-            for (Book book : user.getBorrowedBooks()) {
-                int pos = book.getBorrowLog().size();
-                BorrowedLog log = book.getBorrowLog().get(pos);
-                Date returnDate = log.getReturnDate();
-                int retCmpToday = returnDate.compareTo(today);
-                if (retCmpToday > 0) {
-                    long difference = returnDate.getTime() - today.getTime();
-                    addBlacklistTime(user, difference);
-                }
-            }
-        }
-    }
-
     private void addBlacklistTime(User user, long time) {
         if (isBlacklisted(user)){
             blacklist.replace(
@@ -382,5 +364,24 @@ public class Library implements TimeEventListener {
 
     public void removeBook(long id) {
         books.remove(getBook(id));
+    }
+
+    @Override
+    public void update(Observable o, Object ignored) {
+        Date today = timeController.getDate();
+        for (User user : users) {
+            if (blacklist.get(user).before(today))
+                removeUserFromBlacklist(user);
+            for (Book book : user.getBorrowedBooks()) {
+                int pos = book.getBorrowLog().size();
+                BorrowedLog log = book.getBorrowLog().get(pos);
+                Date returnDate = log.getReturnDate();
+                int retCmpToday = returnDate.compareTo(today);
+                if (retCmpToday > 0) {
+                    long difference = returnDate.getTime() - today.getTime();
+                    addBlacklistTime(user, difference);
+                }
+            }
+        }
     }
 }

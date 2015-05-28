@@ -1,4 +1,4 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.library;
 
 import java.util.Date;
 

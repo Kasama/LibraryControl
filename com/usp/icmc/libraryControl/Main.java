@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("startScene.fxml")
+            getClass().getResource("../view/startScene.fxml")
         );
         Parent root = loader.load();
         primaryStage.setTitle("Library Controller");

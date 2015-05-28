@@ -1,13 +1,13 @@
 package com.usp.icmc.libraryControl;
 
+import com.usp.icmc.library.Book;
+import com.usp.icmc.library.Library;
+import com.usp.icmc.library.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.Optional;
@@ -74,7 +74,9 @@ public class mainSceneController implements Initializable {
 
         library.addUser(user.get());
         this.addObservableUser(user.get());
-        library.storeToDataDirectory(library.getDataDirectory());
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
 
     }
 
@@ -82,11 +84,14 @@ public class mainSceneController implements Initializable {
     private void removeUser() {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
-        if (library.getUser(user.getID()).isBorrowExpired())
+        User u = library.getUser(user.getID());
+        if (u.isBorrowExpired())
             library.removeUserFromBlacklist(library.getUser(user.getID()));
         this.removeObservableUser(library.getUser(user.getID()));
         library.removeUser(user.getID());
-        library.storeToDataDirectory(library.getDataDirectory());
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
     }
 
     @FXML
@@ -103,8 +108,10 @@ public class mainSceneController implements Initializable {
             return;
 
         library.addBook(book.get());
-        library.storeToDataDirectory(library.getDataDirectory());
         this.addObservableBooks(book.get());
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
     }
 
     @FXML
@@ -112,12 +119,18 @@ public class mainSceneController implements Initializable {
         ObservableBook book =
             booksTable.getSelectionModel().getSelectedItem();
         if (!library.getBook(book.getID()).isAvailableForBorrow()) {
-            // TODO alert user that a borrowed book can't be removed
+            Alert cannotRemoveDialog = new Alert(Alert.AlertType.ERROR);
+            cannotRemoveDialog.setTitle("Could not remove selected Book");
+            cannotRemoveDialog.setHeaderText("Failed to remove Book");
+            cannotRemoveDialog.setContentText("The selected book is borrowed!");
+            cannotRemoveDialog.show();
             return;
         }
         this.removeObservableBook(library.getBook(book.getID()));
         library.removeBook(book.getID());
-        library.storeToDataDirectory(library.getDataDirectory());
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
     }
 
     @FXML

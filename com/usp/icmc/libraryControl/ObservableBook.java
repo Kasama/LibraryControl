@@ -1,5 +1,6 @@
 package com.usp.icmc.libraryControl;
 
+import com.usp.icmc.library.Book;
 import javafx.beans.property.*;
 
 public class ObservableBook {

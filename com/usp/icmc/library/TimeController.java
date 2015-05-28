@@ -1,17 +1,17 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.library;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class TimeController {
+public class TimeController extends Observable {
 
     private Calendar calendar;
     private static TimeController instance = null;
-    private List<TimeEventListener> listeners;
+    private Timer timer;
 
     private TimeController() {
         calendar = Calendar.getInstance();
-        listeners = new ArrayList<>();
+        timer = new Timer();
     }
 
     public static TimeController getInstance(){
@@ -33,36 +33,32 @@ public class TimeController {
 
         long time = c.getTimeInMillis() - date.getTime();
 
-        // TODO find a better approach
-        new Thread(
+        Thread t = new Thread(
             () -> {
-                Timer timer = new Timer();
+                timer.cancel();
                 timer.schedule(
                     new TimerTask() {
                         @Override
                         public void run() {
                             calendar.add(Calendar.DATE, 1);
-                            notifyTimeEventListeners();
+                            notifyObservers();
                             timer.cancel();
                             timer.schedule(
                                 new TimerTask() {
                                     @Override
                                     public void run() {
                                         calendar.add(Calendar.DATE, 1);
-                                        notifyTimeEventListeners();
+                                        notifyObservers();
                                     }
-                                }, 24*60*60*1000
+                                }, 24 * 60 * 60 * 1000 // 24h time
                             );
                         }
                     }, time
                 );
             }
-        ).start();
-
-    }
-
-    private void notifyTimeEventListeners() {
-        listeners.forEach(TimeEventListener::handleTimeEvent);
+        );
+        t.setDaemon(true);
+        t.start();
     }
 
     public Date getDate() {
@@ -82,7 +78,7 @@ public class TimeController {
     }
 
     public Date addTime(Date date, long time) {
-        Date d = new Date(date.getTime() + time);
-        return d;
+        return new Date(date.getTime() + time);
     }
+
 }

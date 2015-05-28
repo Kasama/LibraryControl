@@ -1,5 +1,6 @@
 package com.usp.icmc.libraryControl;
 
+import com.usp.icmc.library.Book;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +23,7 @@ public class NewBookDialog extends Dialog<Book> {
 
     public NewBookDialog() {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("newBookDialog.fxml")
+            getClass().getResource("../view/newBookDialog.fxml")
         );
         loader.setController(this);
 

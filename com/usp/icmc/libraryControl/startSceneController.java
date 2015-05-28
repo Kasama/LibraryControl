@@ -3,6 +3,8 @@ package com.usp.icmc.libraryControl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.usp.icmc.library.Library;
+import com.usp.icmc.library.TimeController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -99,9 +101,9 @@ public class startSceneController implements Initializable {
 
     @FXML
     private void loadLibrary(Event e) {
-        String path = null;
+        String path;
         path = libraryList.getSelectionModel().getSelectedItem();
-        File file = null;
+        File file;
         if (path == null)
             return;
         file = new File(path);
@@ -133,7 +135,8 @@ public class startSceneController implements Initializable {
                             ButtonType.NO,
                             ButtonType.YES
                         );
-                        confirmCreateNewLibrary.setTitle("Library does not exists");
+                        confirmCreateNewLibrary
+                            .setTitle("Library does not exists");
                         confirmCreateNewLibrary
                             .setHeaderText("Library does not exists!");
                         Optional<ButtonType> selection
@@ -150,7 +153,7 @@ public class startSceneController implements Initializable {
                         .getInstance();
                     timeController.setDate(date);
                     FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("mainScene.fxml")
+                        getClass().getResource("../view/mainScene.fxml")
                     );
                     Parent root;
                     Stage stage;
