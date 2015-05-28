@@ -67,7 +67,7 @@ public class mainSceneController implements Initializable {
     private void addNewUser() {
         Optional<User> user;
 
-        newUserDialog dialog = new newUserDialog();
+        NewUserDialog dialog = new NewUserDialog();
         user = dialog.showAndWait();
         if (!user.isPresent())
             return;
@@ -97,7 +97,7 @@ public class mainSceneController implements Initializable {
     @FXML
     private void addNewBook() {
         Optional<Book> book;
-        newBookDialog dialog = new newBookDialog();
+        NewBookDialog dialog = new NewBookDialog();
         book = dialog.showAndWait();
         if (!book.isPresent())
             return;

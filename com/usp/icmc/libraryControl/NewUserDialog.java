@@ -7,20 +7,20 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class newBookDialog extends Dialog<Book> {
+public class NewUserDialog extends Dialog<User> {
 
     @FXML
-    public TextField title;
+    private ToggleGroup typeSelection;
     @FXML
-    public TextField author;
+    private TextField userName;
     @FXML
-    public RadioButton radioGeneral;
+    private RadioButton radioProfessor;
     @FXML
-    public RadioButton radioText;
+    private RadioButton radioStudent;
     @FXML
-    public ToggleGroup typeSelection;
+    private RadioButton radioCommunityMember;
 
-    public newBookDialog() {
+    public NewUserDialog() {
         FXMLLoader loader = new FXMLLoader(
             getClass().getResource("newBookDialog.fxml")
         );
@@ -43,27 +43,29 @@ public class newBookDialog extends Dialog<Book> {
             buttonCancel, buttonOK
         );
         this.setResultConverter(
-            param -> param.equals(buttonOK) ?
-                     new Book(
-                         newBookDialog.this.getBookTitle(),
-                         newBookDialog.this.getBookAuthor(),
-                         newBookDialog.this.getOption()
-                     ) : null
+            param ->
+                param.equals(buttonOK) ?
+                new User(
+                    this.getUserName(), this.getOption()
+                ) : null
         );
     }
 
-    public String getBookTitle() {
-        return title.getText();
+    public String getUserName() {
+        return userName.getText();
     }
 
-    public String getBookAuthor() {
-        return author.getText();
-    }
-
-    public boolean getOption() {
+    public int getOption() {
         RadioButton selected = (
             (RadioButton) typeSelection.getSelectedToggle()
         );
-        return selected.equals(radioGeneral);
+        if (selected.equals(radioProfessor))
+            return User.PROFESSOR;
+        else if (selected.equals(radioStudent))
+            return User.STUDENT;
+        else if (selected.equals(radioCommunityMember))
+            return User.COMMUNITY_MEMBER;
+        else
+            return -1;
     }
 }
