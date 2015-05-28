@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.usp.icmc.libraryControl.newUserDialogController">
+   <children>
+      <HBox alignment="CENTER">
+         <children>
+            <Label text="Type the new user's info">
+               <font>
+                  <Font size="45.0" />
+               </font>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </HBox>
+      <Separator prefWidth="200.0">
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </Separator>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Label text="User Name:">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="userName" promptText="Type user name here" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+      <Label text="Select user's type:">
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER">
+         <children>
+            <RadioButton fx:id="radioProfessor" mnemonicParsing="false" selected="true" text="Professor" HBox.hgrow="ALWAYS">
+                <toggleGroup>
+                    <ToggleGroup fx:id="typeSelection" />
+                </toggleGroup>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </RadioButton>
+            <Separator visible="false" HBox.hgrow="ALWAYS" />
+            <RadioButton fx:id="radioStudent" mnemonicParsing="false" text="Student" toggleGroup="$typeSelection" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </RadioButton>
+            <Separator visible="false" HBox.hgrow="ALWAYS" />
+            <RadioButton fx:id="radioCommunityMember" mnemonicParsing="false" text="Community Member" toggleGroup="$typeSelection" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </RadioButton>
+         </children>
+      </HBox>
+   </children>
+</VBox>
