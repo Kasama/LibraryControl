@@ -10,7 +10,7 @@ public class Book {
     private String title;
     private String author;
     private long id;
-    private boolean availableForBorrow = false;
+    private boolean availableForBorrow = true;
     private boolean canBeBorrowedByAnyone = false;
     private ArrayList<BorrowedLog> borrowLog;
 

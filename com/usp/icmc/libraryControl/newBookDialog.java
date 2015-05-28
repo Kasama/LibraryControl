@@ -5,7 +5,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 
-public class newBookDialogController {
+public class newBookDialog {
 
     @FXML
     public TextField title;

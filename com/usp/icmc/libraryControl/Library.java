@@ -104,7 +104,6 @@ public class Library implements TimeEventListener {
                         );
                         user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
                         addUser(user);
-                        System.out.println(getUser(user.getId()).getName());
                     }
                 );
                 // add borrowed books for each user
@@ -365,4 +364,19 @@ public class Library implements TimeEventListener {
         return dataDirectory;
     }
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public void removeUser(long id) {
+        users.remove(getUser(id));
+    }
+
+    public ArrayList<Book> getBooks() {
+        return books;
+    }
+
+    public void removeBook(long id) {
+        books.remove(getBook(id));
+    }
 }

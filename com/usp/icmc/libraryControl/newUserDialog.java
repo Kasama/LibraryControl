@@ -1,12 +1,12 @@
 package com.usp.icmc.libraryControl;
 
-import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 
-public class newUserDialogController {
+public class newUserDialog extends Dialog {
 
     @FXML
     private ToggleGroup typeSelection;
@@ -19,17 +19,14 @@ public class newUserDialogController {
     @FXML
     private RadioButton radioCommunityMember;
 
-    @FXML
-    private void confirm(Event e){
-
-    }
-
     public String getUserName() {
         return userName.getText();
     }
 
     public int getOption() {
-        RadioButton selected = ((RadioButton) typeSelection.getSelectedToggle());
+        RadioButton selected = (
+            (RadioButton) typeSelection.getSelectedToggle()
+        );
         if (selected.equals(radioProfessor))
             return User.PROFESSOR;
         else if (selected.equals(radioStudent))
