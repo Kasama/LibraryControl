@@ -35,14 +35,12 @@ public class TimeController extends Observable {
 
         Thread t = new Thread(
             () -> {
-                timer.cancel();
                 timer.schedule(
                     new TimerTask() {
                         @Override
                         public void run() {
                             calendar.add(Calendar.DATE, 1);
                             notifyObservers();
-                            timer.cancel();
                             timer.schedule(
                                 new TimerTask() {
                                     @Override

@@ -63,7 +63,7 @@ public class Library implements Observer {
         } else {
             try {
                 // reads books from the data file the entries are organized as
-                // "Author","Title","canBeBorrowedByAnyone"
+                // "Author","Title","canBeBorrowedByAnyone","ID","isAvailable"
                 parseCSV(
                     booksFile,
                     tokens ->
@@ -71,8 +71,9 @@ public class Library implements Observer {
                             new Book(
                                 tokens[0],
                                 tokens[1],
-                                Boolean.getBoolean(tokens[2]),
-                                Long.parseLong(tokens[3])
+                                Boolean.parseBoolean(tokens[2]),
+                                Long.parseLong(tokens[3]),
+                                Boolean.parseBoolean(tokens[4])
                             )
                         )
                 );
@@ -212,11 +213,12 @@ public class Library implements Observer {
                     writer.writeNext(nextLine);
                 }
                 writer.flush();
-                String[] nextLine = new String[4];
+                String[] nextLine = new String[5];
                 nextLine[0] = book.getAuthor();
                 nextLine[1] = book.getTitle();
                 nextLine[2] = String.valueOf(book.canBeBorrowedByAnyone());
                 nextLine[3] = String.valueOf(book.getId());
+                nextLine[4] = String.valueOf(book.isAvailableForBorrow());
                 csvWriter.writeNext(nextLine);
             }
             csvWriter.flush();

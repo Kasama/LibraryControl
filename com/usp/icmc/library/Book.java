@@ -10,22 +10,24 @@ public class Book {
     private String title;
     private String author;
     private long id;
-    private boolean availableForBorrow = true;
+    private boolean availableForBorrow;
     private boolean canBeBorrowedByAnyone = false;
     private ArrayList<BorrowedLog> borrowLog;
 
     public Book(String title, String author, boolean canBeBorrowedByAnyone) {
-        this(title, author, canBeBorrowedByAnyone, maxId++);
+        this(title, author, canBeBorrowedByAnyone, maxId++, true);
     }
 
     public Book(
-        String title, String author, boolean canBeBorrowedByAnyone, long id
+        String title, String author, boolean canBeBorrowedByAnyone, long id,
+        boolean availableForBorrow
     ) {
         this.title = title;
         this.author = author;
         if (id >= maxId) maxId = id + 1;
         this.id = id;
         this.canBeBorrowedByAnyone = canBeBorrowedByAnyone;
+        this.availableForBorrow = availableForBorrow;
         this.borrowLog = new ArrayList<>();
     }
 
