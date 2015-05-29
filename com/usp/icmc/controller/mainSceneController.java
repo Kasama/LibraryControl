@@ -58,12 +58,12 @@ public class mainSceneController implements Initializable {
     public void initialize(
         URL location, ResourceBundle resources
     ) {
-//        userSelector.setOnKeyTyped(
-//            new AutoCompleteComboBoxListener<String>(userSelector)
-//        );
-//        bookSelector.setOnKeyTyped(
-//            new AutoCompleteComboBoxListener<String>(bookSelector)
-//        );
+        //        userSelector.setOnKeyTyped(
+        //            new AutoCompleteComboBoxListener<String>(userSelector)
+        //        );
+        //        bookSelector.setOnKeyTyped(
+        //            new AutoCompleteComboBoxListener<String>(bookSelector)
+        //        );
     }
 
     @FXML
@@ -104,10 +104,10 @@ public class mainSceneController implements Initializable {
         ObservableBook b =
             booksTable.getSelectionModel().getSelectedItem();
         ObservableUser u = userSelector.getValue();
-        if (u == null){
+        if (u == null) {
             // TODO ofende
             return;
-        }else if (b == null){
+        } else if (b == null) {
             // TODO ofende
             return;
         }
@@ -119,7 +119,7 @@ public class mainSceneController implements Initializable {
             // TODO ofende
             return;
         }
-        u.setBorrowed(u.getBorrowed()+1);
+        u.setBorrowed(u.getBorrowed() + 1);
         syncObservableBooks(book);
         new Thread(
             () -> library.storeToDataDirectory(library.getDataDirectory())
@@ -167,10 +167,10 @@ public class mainSceneController implements Initializable {
         ObservableUser u =
             usersTable.getSelectionModel().getSelectedItem();
         ObservableBook b = bookSelector.getValue();
-        if (u == null){
+        if (u == null) {
             // TODO ofende
             return;
-        }else if (b == null){
+        } else if (b == null) {
             // TODO ofende
             return;
         }
@@ -182,8 +182,9 @@ public class mainSceneController implements Initializable {
             // TODO ofende
             return;
         }
-        u.setBorrowed(u.getBorrowed()-1);
+        u.setBorrowed(u.getBorrowed() - 1);
         syncObservableBooks(book);
+        filterComboBox();
         new Thread(
             () -> library.storeToDataDirectory(library.getDataDirectory())
         ).start();
@@ -193,7 +194,7 @@ public class mainSceneController implements Initializable {
         this.library = library;
     }
 
-    public void syncObservableBooks(Book book){
+    public void syncObservableBooks(Book book) {
         Optional<ObservableBook> o;
         o = bookList
             .stream()
@@ -310,10 +311,10 @@ public class mainSceneController implements Initializable {
             new StringConverter<ObservableBook>() {
                 @Override
                 public String toString(ObservableBook book) {
-//                    if (book == null)
-//                        return "";
-//                    else
-                        return book.toString();
+                    //                    if (book == null)
+                    //                        return "";
+                    //                    else
+                    return book.toString();
                 }
 
                 @Override
@@ -336,5 +337,80 @@ public class mainSceneController implements Initializable {
                 }
             }
         );
+    }
+
+    public void viewBorrowedBooks() {
+        StringBuilder sb = new StringBuilder();
+
+        ObservableUser user =
+            usersTable.getSelectionModel().getSelectedItem();
+        User u = library.getUser(user.getID());
+        u.getBorrowedBooks().forEach(
+            book -> {
+                sb.append(book.toString());
+                sb.append("\nBorrowed on:\t");
+                sb.append(
+                    book
+                        .getBorrowLog()
+                        .get(book.getBorrowLog().size() - 1)
+                        .getBorrowedDate()
+                );
+                sb.append("\nReturn until:\t");
+                sb.append(
+                    book
+                        .getBorrowLog()
+                        .get(book.getBorrowLog().size() - 1)
+                        .getReturnDate()
+                );
+                sb.append("\n\n");
+            }
+        );
+
+        Viewer view = new Viewer(u.getName() + "'s books", sb.toString());
+        view.setTitle("Borrowed Books");
+        view.show();
+
+    }
+
+    public void viewLog() {
+        StringBuilder sb = new StringBuilder();
+
+        ObservableBook book =
+            booksTable.getSelectionModel().getSelectedItem();
+        Book b = library.getBook(book.getID());
+        b.getBorrowLog().forEach(
+            logEntry -> {
+                User u = logEntry.getUser();
+                sb.append("Borrowed by ");
+                sb.append(u.getName());
+                sb.append(" [ID: ");
+                sb.append(u.getId());
+                sb.append("]\n");
+                sb.append("On:\t\t\t");
+                sb.append(logEntry.getBorrowedDate());
+                sb.append("\nReturn until:\t");
+                sb.append(logEntry.getReturnDate());
+                sb.append("\n\n");
+            }
+        );
+
+        Viewer view = new Viewer(b.getTitle() + "'s log", sb.toString());
+        view.setTitle("Book Log");
+        view.show();
+    }
+
+    public void filterComboBox() {
+        ObservableUser user =
+            usersTable.getSelectionModel().getSelectedItem();
+        User u = library.getUser(user.getID());
+        ObservableList<ObservableBook> boxList;
+        boxList = FXCollections.observableArrayList();
+        boxList.addAll(
+            bookList.stream().filter(
+                observableBook -> u
+                    .hasBook(library.getBook(observableBook.getID()))
+            ).collect(Collectors.toList())
+        );
+        bookSelector.setItems(boxList);
     }
 }

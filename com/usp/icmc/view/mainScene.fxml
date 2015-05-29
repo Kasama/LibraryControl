@@ -68,6 +68,11 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </ComboBox>
+                                     <Button mnemonicParsing="false" onAction="#viewLog" text="View log">
+                                         <HBox.margin>
+                                             <Insets bottom="5.0" top="5.0"/>
+                                         </HBox.margin>
+                                     </Button>
                                     <Button mnemonicParsing="false" onAction="#borrowToUser" text="Lend">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -92,7 +97,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </TextField>
-                               <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                               <TableView fx:id="usersTable" onMouseClicked="#filterComboBox" VBox.vgrow="ALWAYS">
                                  <columns>
                                      <TableColumn fx:id="tableUserID" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0"
                                                   text="ID"/>
@@ -118,12 +123,18 @@
                                        </HBox.margin>
                                     </Button>
                                      <ComboBox fx:id="bookSelector" editable="false" maxHeight="1.7976931348623157E308"
-                                               maxWidth="1.7976931348623157E308" promptText="&lt;Select an book&gt;"
+                                               maxWidth="1.7976931348623157E308" promptText="&lt;Select book&gt;"
                                                HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </ComboBox>
+                                     <Button mnemonicParsing="false" onAction="#viewBorrowedBooks"
+                                             text="Borrowed Books">
+                                         <HBox.margin>
+                                             <Insets bottom="5.0" top="5.0"/>
+                                         </HBox.margin>
+                                     </Button>
                                     <Button mnemonicParsing="false" onAction="#returnBook" text="Return">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

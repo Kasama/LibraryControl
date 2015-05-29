@@ -78,5 +78,4 @@ public class TimeController extends Observable {
     public Date addTime(Date date, long time) {
         return new Date(date.getTime() + time);
     }
-
 }

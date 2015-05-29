@@ -293,6 +293,10 @@ public class Library implements Observer {
         if (!user.canBorrowBook()) return false;
         if (isBlacklisted(user)) return false;
         if (!book.isAvailableForBorrow()) return false;
+        if (
+            (!book.canBeBorrowedByAnyone()) &&
+            (user.getType() == User.COMMUNITY_MEMBER)
+            ) return false;
 
         user.borrowBook(book);
         book.setAvailableForBorrow(false);
