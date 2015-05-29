@@ -51,8 +51,14 @@ public class startSceneController implements Initializable {
                 String[] tokens;
                 while ((tokens = csvReader.readNext()) != null)
                     libraryListElements.add(tokens[0]);
-            } catch (IOException ignored) {
-                // TODO proper catching
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Fatal error!");
+                alert.setHeaderText("A file read exception was reach");
+                alert.setContentText("Check your read/write permissions");
+                alert.showAndWait();
+                e.printStackTrace();
+                System.exit(1);
             }
         }
         libraryList.setItems(libraryListElements);
@@ -68,12 +74,9 @@ public class startSceneController implements Initializable {
         selectedDirectory = directoryChooser.showDialog(
             (((Button) e.getSource()).getScene()).getWindow()
         );
-        System.out.println(selectedDirectory.getPath());
-        try {
-            libraryList.getItems().add(selectedDirectory.getPath());
-        } catch (Exception ignored) {
-            // TODO proper catching
-        }
+        if (selectedDirectory == null)
+            return;
+        libraryList.getItems().add(selectedDirectory.getPath());
         updateLibrariesFile();
     }
 
@@ -88,7 +91,13 @@ public class startSceneController implements Initializable {
                 csvWriter.flush();
             }
         } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Fatal error!");
+            alert.setHeaderText("A file read exception was reach");
+            alert.setContentText("Check your read/write permissions");
+            alert.showAndWait();
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -171,7 +180,15 @@ public class startSceneController implements Initializable {
                         stage.setHeight(600);
                         stage.setWidth(800);
                     } catch (IOException ex) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Fatal error!");
+                        alert.setHeaderText("Could not find GUI file");
+                        alert.setContentText(
+                            "Check your read/write permissions"
+                        );
+                        alert.showAndWait();
                         ex.printStackTrace();
+                        System.exit(1);
                     }
                 }
             }

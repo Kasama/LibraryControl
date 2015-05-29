@@ -60,8 +60,10 @@ public class Library implements Observer {
                 booksDirectory.mkdir();
                 usersDirectory.mkdir();
             } catch (IOException e) {
-                e.printStackTrace();
-                // TODO proper exception handling
+                System.err.println(
+                    "Could not interact with filesystem, maybe it's read-only!"
+                );
+                System.exit(1);
             }
         } else {
             try {
@@ -141,8 +143,10 @@ public class Library implements Observer {
                         )
                 );
             } catch (IOException e) {
-                e.printStackTrace();
-                // TODO proper exception handling
+                System.err.println(
+                    "Could not interact with filesystem, maybe it's read-only!"
+                );
+                System.exit(1);
             }
         }
     }
@@ -232,8 +236,10 @@ public class Library implements Observer {
             csvWriter.flush();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO proper exception handling
+            System.err.println(
+                "Could not interact with filesystem, maybe it's read-only!"
+            );
+            System.exit(1);
         }
 
     }

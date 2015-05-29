@@ -1,4 +1,4 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.extra;
 
 import com.usp.icmc.library.User;
 import javafx.beans.property.LongProperty;

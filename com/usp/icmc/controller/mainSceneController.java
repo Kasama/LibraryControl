@@ -3,8 +3,8 @@ package com.usp.icmc.controller;
 import com.usp.icmc.library.Book;
 import com.usp.icmc.library.Library;
 import com.usp.icmc.library.User;
-import com.usp.icmc.libraryControl.ObservableBook;
-import com.usp.icmc.libraryControl.ObservableUser;
+import com.usp.icmc.extra.ObservableBook;
+import com.usp.icmc.extra.ObservableUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -88,6 +88,22 @@ public class mainSceneController implements Initializable {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
         User u = library.getUser(user.getID());
+        if (u.getBorrowedBooks().size() != 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("User has books");
+            alert.setHeaderText("The selected user cannot be removed!");
+            alert.setContentText("The user has one or more books");
+            alert.showAndWait();
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm user removal");
+        alert.setHeaderText("Really want to remove user?");
+        alert.setContentText("User: " + user.getName() + " ID:" + user.getID());
+        Optional<ButtonType> o;
+        o = alert.showAndWait();
+        if (!o.isPresent() || !o.get().equals(ButtonType.OK))
+            return;
         if (u.isBorrowExpired())
             library.removeUserFromBlacklist(library.getUser(user.getID()));
         this.removeObservableUser(library.getUser(user.getID()));
@@ -105,10 +121,18 @@ public class mainSceneController implements Initializable {
             booksTable.getSelectionModel().getSelectedItem();
         ObservableUser u = userSelector.getValue();
         if (u == null) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a user");
+            alert.setHeaderText("No user selected!");
+            alert.setContentText("Please select a user from whom to borrow");
+            alert.show();
             return;
         } else if (b == null) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a book");
+            alert.setHeaderText("No book selected!");
+            alert.setContentText("Please select a book to borrow");
+            alert.show();
             return;
         }
 
@@ -116,7 +140,11 @@ public class mainSceneController implements Initializable {
         user = library.getUser(u.getID());
 
         if (!library.borrowBook(user, book)) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Not permitted");
+            alert.setHeaderText("Invalid operation!");
+            alert.setContentText("This user cannot borrow this book");
+            alert.show();
             return;
         }
         u.setBorrowed(u.getBorrowed() + 1);
@@ -153,6 +181,16 @@ public class mainSceneController implements Initializable {
             cannotRemoveDialog.show();
             return;
         }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm user removal");
+        alert.setHeaderText("Really want to remove user?");
+        alert.setContentText(
+            "Title: " + book.getTitle() + " ID:" + book.getID()
+        );
+        Optional<ButtonType> o;
+        o = alert.showAndWait();
+        if (!o.isPresent() || !o.get().equals(ButtonType.OK))
+            return;
         this.removeObservableBook(library.getBook(book.getID()));
         library.removeBook(book.getID());
         new Thread(
@@ -168,10 +206,18 @@ public class mainSceneController implements Initializable {
             usersTable.getSelectionModel().getSelectedItem();
         ObservableBook b = bookSelector.getValue();
         if (u == null) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a user");
+            alert.setHeaderText("No user selected!");
+            alert.setContentText("Please select a user from whom to return");
+            alert.show();
             return;
         } else if (b == null) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a book");
+            alert.setHeaderText("No book selected!");
+            alert.setContentText("Please select a book to return");
+            alert.show();
             return;
         }
 
@@ -179,7 +225,11 @@ public class mainSceneController implements Initializable {
         user = library.getUser(u.getID());
 
         if (!library.returnBook(user, book)) {
-            // TODO ofende
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Not permitted");
+            alert.setHeaderText("Invalid operation!");
+            alert.setContentText("This user cannot return this book");
+            alert.show();
             return;
         }
         u.setBorrowed(u.getBorrowed() - 1);

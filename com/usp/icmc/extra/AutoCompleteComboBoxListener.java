@@ -1,4 +1,4 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.extra;
 
 import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.collections.FXCollections;
