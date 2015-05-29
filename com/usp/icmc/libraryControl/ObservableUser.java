@@ -91,6 +91,11 @@ public class ObservableUser {
         return status;
     }
 
+    @Override
+    public String toString() {
+        return getID() + ": " + getName();
+    }
+
     public void setStatus(String status) {
         this.status.set(status);
     }

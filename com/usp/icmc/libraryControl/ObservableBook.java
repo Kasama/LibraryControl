@@ -81,4 +81,13 @@ public class ObservableBook {
     public void setStatus(String status) {
         this.status.set(status);
     }
+
+    public void setStatus(boolean status) {
+        this.status.set(status ? "Available" : "Borrowed");
+    }
+
+    @Override
+    public String toString() {
+        return getID() + ": " + getTitle();
+    }
 }

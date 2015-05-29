@@ -63,7 +63,7 @@ public class Book {
         today = TimeController.getInstance().getDate();
         toReturn = new Date(
             today.getTime() +
-            user.getMaxBorrowDays() * 24 * 60 * 60 * 1000
+            ((long) user.getMaxBorrowDays()) * 24l * 60l * 60l * 1000l
         );
 
         borrowLog.add(new BorrowedLog(user, today, toReturn));
@@ -88,4 +88,5 @@ public class Book {
                ((Book) obj).getTitle().equals(this.getTitle()) &&
                ((Book) obj).getAuthor().equals(this.getAuthor());
     }
+
 }

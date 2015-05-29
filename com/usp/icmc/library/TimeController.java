@@ -11,7 +11,7 @@ public class TimeController extends Observable {
 
     private TimeController() {
         calendar = Calendar.getInstance();
-        timer = new Timer();
+        timer = new Timer(true);
     }
 
     public static TimeController getInstance(){

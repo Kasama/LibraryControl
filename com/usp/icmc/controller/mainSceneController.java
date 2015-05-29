@@ -1,13 +1,16 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.controller;
 
 import com.usp.icmc.library.Book;
 import com.usp.icmc.library.Library;
 import com.usp.icmc.library.User;
+import com.usp.icmc.libraryControl.ObservableBook;
+import com.usp.icmc.libraryControl.ObservableUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.Optional;
@@ -41,9 +44,9 @@ public class mainSceneController implements Initializable {
     @FXML
     private TableColumn<ObservableBook, String> tableBookType;
     @FXML
-    private ComboBox<String> userSelector;
+    private ComboBox<ObservableUser> userSelector;
     @FXML
-    private ComboBox<String> bookSelector;
+    private ComboBox<ObservableBook> bookSelector;
     @FXML
     private TextField searchBox;
 
@@ -55,12 +58,12 @@ public class mainSceneController implements Initializable {
     public void initialize(
         URL location, ResourceBundle resources
     ) {
-        userSelector.setOnKeyTyped(
-            new AutoCompleteComboBoxListener<String>(userSelector)
-        );
-        bookSelector.setOnKeyTyped(
-            new AutoCompleteComboBoxListener<String>(bookSelector)
-        );
+//        userSelector.setOnKeyTyped(
+//            new AutoCompleteComboBoxListener<String>(userSelector)
+//        );
+//        bookSelector.setOnKeyTyped(
+//            new AutoCompleteComboBoxListener<String>(bookSelector)
+//        );
     }
 
     @FXML
@@ -96,7 +99,31 @@ public class mainSceneController implements Initializable {
 
     @FXML
     private void borrowToUser() {
+        Book book;
+        User user;
+        ObservableBook b =
+            booksTable.getSelectionModel().getSelectedItem();
+        ObservableUser u = userSelector.getValue();
+        if (u == null){
+            // TODO ofende
+            return;
+        }else if (b == null){
+            // TODO ofende
+            return;
+        }
 
+        book = library.getBook(b.getID());
+        user = library.getUser(u.getID());
+
+        if (!library.borrowBook(user, book)) {
+            // TODO ofende
+            return;
+        }
+        u.setBorrowed(u.getBorrowed()+1);
+        syncObservableBooks(book);
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
     }
 
     @FXML
@@ -135,11 +162,48 @@ public class mainSceneController implements Initializable {
 
     @FXML
     private void returnBook() {
+        Book book;
+        User user;
+        ObservableUser u =
+            usersTable.getSelectionModel().getSelectedItem();
+        ObservableBook b = bookSelector.getValue();
+        if (u == null){
+            // TODO ofende
+            return;
+        }else if (b == null){
+            // TODO ofende
+            return;
+        }
 
+        book = library.getBook(b.getID());
+        user = library.getUser(u.getID());
+
+        if (!library.returnBook(user, book)) {
+            // TODO ofende
+            return;
+        }
+        u.setBorrowed(u.getBorrowed()-1);
+        syncObservableBooks(book);
+        new Thread(
+            () -> library.storeToDataDirectory(library.getDataDirectory())
+        ).start();
     }
 
     public void setLibrary(Library library) {
         this.library = library;
+    }
+
+    public void syncObservableBooks(Book book){
+        Optional<ObservableBook> o;
+        o = bookList
+            .stream()
+            .filter(
+                b -> b.getID() == book.getId()
+            )
+            .findFirst();
+        bookList.remove(o.get());
+        bookList.add(new ObservableBook(book));
+
     }
 
     public void addObservableBooks(Book book) {
@@ -211,6 +275,66 @@ public class mainSceneController implements Initializable {
         );
         tableBookStatus.setCellValueFactory(
             cellData -> cellData.getValue().statusProperty()
+        );
+
+        userSelector.setItems(userList);
+        userSelector.setConverter(
+            new StringConverter<ObservableUser>() {
+                @Override
+                public String toString(ObservableUser user) {
+                    return user.toString();
+                }
+
+                @Override
+                public ObservableUser fromString(String string) {
+                    String id;
+                    int sep;
+                    Optional<ObservableUser> ret;
+                    sep = string.indexOf(":");
+                    id = string.substring(0, sep);
+                    ret = userList
+                        .stream()
+                        .filter(
+                            u -> u.getID() == Long.parseLong(id)
+                        )
+                        .findFirst();
+                    if (ret.isPresent())
+                        return ret.get();
+                    else
+                        return null;
+                }
+            }
+        );
+        bookSelector.setItems(bookList);
+        bookSelector.setConverter(
+            new StringConverter<ObservableBook>() {
+                @Override
+                public String toString(ObservableBook book) {
+//                    if (book == null)
+//                        return "";
+//                    else
+                        return book.toString();
+                }
+
+                @Override
+                public ObservableBook fromString(String string) {
+                    String id;
+                    int sep;
+                    Optional<ObservableBook> ret;
+                    sep = string.indexOf(":");
+                    id = string.substring(0, sep);
+                    ret = bookList
+                        .stream()
+                        .filter(
+                            b -> b.getID() == Long.parseLong(id)
+                        )
+                        .findFirst();
+                    if (ret.isPresent())
+                        return ret.get();
+                    else
+                        return null;
+                }
+            }
         );
     }
 }

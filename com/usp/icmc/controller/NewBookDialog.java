@@ -1,4 +1,4 @@
-package com.usp.icmc.libraryControl;
+package com.usp.icmc.controller;
 
 import com.usp.icmc.library.Book;
 import javafx.fxml.FXML;

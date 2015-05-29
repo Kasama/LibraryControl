@@ -16,7 +16,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
     private ComboBox comboBox;
     private StringBuilder sb;
     private ObservableList<T> data;
-    private boolean moveCaretToPos = false;
+    private boolean moveCaretToPos = true;
     private int caretPos;
 
     public AutoCompleteComboBoxListener(final ComboBox comboBox) {
@@ -45,10 +45,10 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
             moveCaret(comboBox.getEditor().getText().length());
             return;
         } else if (event.getCode() == KeyCode.BACK_SPACE) {
-            moveCaretToPos = true;
+            moveCaretToPos = false;
             caretPos = comboBox.getEditor().getCaretPosition();
         } else if (event.getCode() == KeyCode.DELETE) {
-            moveCaretToPos = true;
+            moveCaretToPos = false;
             caretPos = comboBox.getEditor().getCaretPosition();
         }
 
@@ -75,7 +75,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
         comboBox.setItems(list);
         comboBox.getEditor().setText(t);
-        if (!moveCaretToPos) {
+        if (moveCaretToPos) {
             caretPos = -1;
         }
         moveCaret(t.length());
@@ -90,7 +90,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
         } else {
             comboBox.getEditor().positionCaret(caretPos);
         }
-        moveCaretToPos = false;
+        moveCaretToPos = true;
     }
 
 }

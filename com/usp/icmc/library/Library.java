@@ -13,6 +13,7 @@ public class Library implements Observer {
 
     private ArrayList<User> users;
     private ArrayList<Book> books;
+    private Map<User, Date> blacklistStart;
     private Map<User, Date> blacklist;
     private TimeController timeController;
     private String dataDirectory;
@@ -22,15 +23,17 @@ public class Library implements Observer {
         books = new ArrayList<>();
         users = new ArrayList<>();
         blacklist = new HashMap<>();
+        blacklistStart = new HashMap<>();
         timeController = TimeController.getInstance();
         timeController.addObserver(this);
         this.dataDirectory = dataDirectory;
 
         loadFromDataDirectory(dataDirectory);
+        update(null, null);
 
     }
 
-    private void loadFromDataDirectory(String dataDirectory) {
+    private synchronized void loadFromDataDirectory(String dataDirectory) {
 
         File file = new File(dataDirectory);
         File booksDirectory = new File(dataDirectory + "/books");
@@ -77,6 +80,19 @@ public class Library implements Observer {
                             )
                         )
                 );
+                // read all users
+                parseCSV(
+                    usersFile,
+                    tokens -> {
+                        User user = new User(
+                            tokens[0],
+                            Long.parseLong(tokens[3]),
+                            Integer.parseInt(tokens[1])
+                        );
+                        user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
+                        addUser(user);
+                    }
+                );
                 // fill in books borrow logs
                 for (Book book : books) {
                     long bookId = book.getId();
@@ -97,19 +113,6 @@ public class Library implements Observer {
                             )
                     );
                 }
-                // read all users
-                parseCSV(
-                    usersFile,
-                    tokens -> {
-                        User user = new User(
-                            tokens[0],
-                            Long.parseLong(tokens[3]),
-                            Integer.parseInt(tokens[1])
-                        );
-                        user.setBorrowExpired(Boolean.getBoolean(tokens[2]));
-                        addUser(user);
-                    }
-                );
                 // add borrowed books for each user
                 for (User user : users) {
                     long userId = user.getId();
@@ -120,9 +123,9 @@ public class Library implements Observer {
                     parseCSV(
                         userFile,
                         tokens -> {
-                            if (doesBookExist(Integer.parseInt(tokens[0])))
+                            if (doesBookExist(Long.parseLong(tokens[0])))
                                 user.borrowBook(
-                                    getBook(Integer.parseInt(tokens[0]))
+                                    getBook(Long.parseLong(tokens[0]))
                                 );
                         }
                     );
@@ -133,7 +136,8 @@ public class Library implements Observer {
                     tokens ->
                         addToBlacklist(
                             getUser(Integer.parseInt(tokens[0])),
-                            Long.parseLong(tokens[1])
+                            Long.parseLong(tokens[1]),
+                            Long.parseLong(tokens[2])
                         )
                 );
             } catch (IOException e) {
@@ -143,7 +147,7 @@ public class Library implements Observer {
         }
     }
 
-    public void storeToDataDirectory(String dataDirectory) {
+    public synchronized void storeToDataDirectory(String dataDirectory) {
 
         File file = new File(dataDirectory);
         File booksDirectory = new File(dataDirectory + "/books");
@@ -156,15 +160,19 @@ public class Library implements Observer {
 
         try {
             csvWriter = new CSVWriter(new FileWriter(blacklistFile));
-            for (Map.Entry<User, Date> m : blacklist.entrySet()) {
-                User user = m.getKey();
-                Date date = m.getValue();
-                String[] nextLine;
-                nextLine = new String[2];
-                nextLine[0] = String.valueOf(user.getId());
-                nextLine[1] = String.valueOf(date.getTime());
-                csvWriter.writeNext(nextLine);
-            }
+            final CSVWriter blackListWriter = csvWriter;
+            blacklist.forEach(
+                (user, dateDifference) -> {
+                    String[] nextLine;
+                    Date startDate;
+                    startDate = blacklistStart.get(user);
+                    nextLine = new String[3];
+                    nextLine[0] = String.valueOf(user.getId());
+                    nextLine[1] = String.valueOf(startDate.getTime());
+                    nextLine[2] = String.valueOf(dateDifference.getTime());
+                    blackListWriter.writeNext(nextLine);
+                }
+            );
             csvWriter.flush();
 
             csvWriter = new CSVWriter(new FileWriter(usersFile));
@@ -206,9 +214,9 @@ public class Library implements Observer {
                     ) {
                     String[] nextLine = new String[3];
                     nextLine[0] = String.valueOf(borrowedLog.getUser().getId());
-                    nextLine[2] = String
+                    nextLine[1] = String
                         .valueOf(borrowedLog.getBorrowedDate().getTime());
-                    nextLine[3] = String
+                    nextLine[2] = String
                         .valueOf(borrowedLog.getReturnDate().getTime());
                     writer.writeNext(nextLine);
                 }
@@ -246,11 +254,16 @@ public class Library implements Observer {
 
     }
 
-    private void addToBlacklist(User user, long time) {
-        if (blacklist.containsKey(user))
-            blacklist.replace(user, new Date(time));
-        else
-            blacklist.put(user, new Date(time));
+    private void addToBlacklist(
+        User user, long startTime, long timeDifference
+    ) {
+        if (blacklist.containsKey(user)) {
+            blacklistStart.replace(user, new Date(startTime));
+            blacklist.replace(user, new Date(timeDifference));
+        } else {
+            blacklistStart.put(user, new Date(startTime));
+            blacklist.put(user, new Date(timeDifference));
+        }
         user.setBorrowExpired(true);
     }
 
@@ -267,7 +280,7 @@ public class Library implements Observer {
     }
 
     public void addUser(User user) {
-        if(!users.contains(user))
+        if (!users.contains(user))
             users.add(user);
     }
 
@@ -276,20 +289,25 @@ public class Library implements Observer {
             books.add(book);
     }
 
-    public void borrowBook(User user, Book book) {
-        if (!user.canBorrowBook()) return;
-        if (isBlacklisted(user)) return;
+    public boolean borrowBook(User user, Book book) {
+        if (!user.canBorrowBook()) return false;
+        if (isBlacklisted(user)) return false;
+        if (!book.isAvailableForBorrow()) return false;
 
         user.borrowBook(book);
         book.setAvailableForBorrow(false);
         book.writeBorrowLog(user);
+
+        return true;
     }
 
-    public void returnBook(User user, Book book) {
+    public boolean returnBook(User user, Book book) {
         if (user.hasBook(book)) {
             user.returnBook(book);
             book.setAvailableForBorrow(true);
+            return true;
         }
+        return false;
     }
 
     public boolean doesBookExist(String Author, String Title) {
@@ -302,11 +320,10 @@ public class Library implements Observer {
         return b.isPresent();
     }
 
-    public boolean doesBookExist(int id) {
+    public boolean doesBookExist(long id) {
         Optional<Book> b;
         b = books.stream()
             .filter(book -> book.getId() == id)
-            .filter(Book::isAvailableForBorrow)
             .findFirst();
         return b.isPresent();
     }
@@ -327,20 +344,20 @@ public class Library implements Observer {
         b = books
             .stream()
             .filter(book -> book.getId() == id)
-//            .filter(Book::isAvailableForBorrow)
+                //            .filter(Book::isAvailableForBorrow)
             .findFirst();
         if (!b.isPresent()) throw new noBookFoundException();
         return b.get();
     }
 
     private void addBlacklistTime(User user, long time) {
-        if (isBlacklisted(user)){
+        if (isBlacklisted(user)) {
             blacklist.replace(
                 user,
                 timeController.addTime(blacklist.get(user), time)
             );
-        }else {
-            addToBlacklist(user, time);
+        } else {
+            addToBlacklist(user, timeController.getDate().getTime(), time);
         }
     }
 
@@ -369,21 +386,36 @@ public class Library implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object ignored) {
+    public void update(Observable ignored1, Object ignored2) {
         Date today = timeController.getDate();
         for (User user : users) {
-            if (blacklist.get(user).before(today))
-                removeUserFromBlacklist(user);
-            for (Book book : user.getBorrowedBooks()) {
-                int pos = book.getBorrowLog().size();
-                BorrowedLog log = book.getBorrowLog().get(pos);
-                Date returnDate = log.getReturnDate();
-                int retCmpToday = returnDate.compareTo(today);
-                if (retCmpToday > 0) {
-                    long difference = returnDate.getTime() - today.getTime();
-                    addBlacklistTime(user, difference);
-                }
+            if (blacklist.containsKey(user)) {
+                Date expiration;
+                expiration = new Date(
+                    blacklistStart.get(user).getTime() +
+                    blacklist.get(user).getTime()
+                );
+                if (expiration.before(today))
+                    removeUserFromBlacklist(user);
             }
+            user.getBorrowedBooks().stream()
+                .filter(book -> book.getBorrowLog().size() != 0)
+                .forEach(
+                    book -> {
+                        int pos = book.getBorrowLog().size();
+                        BorrowedLog log = book.getBorrowLog().get(pos - 1);
+                        Date returnDate = log.getReturnDate();
+                        int retCmpToday = returnDate.compareTo(today);
+                        if (retCmpToday < 0) {
+                            long difference = today.getTime() -
+                                              returnDate.getTime();
+                            addBlacklistTime(user, difference);
+                            new Thread(
+                                () -> storeToDataDirectory(dataDirectory)
+                            ).start();
+                        }
+                    }
+                );
         }
     }
 }

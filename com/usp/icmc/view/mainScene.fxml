@@ -7,7 +7,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="270.0" prefWidth="648.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.usp.icmc.libraryControl.mainSceneController">
+<VBox prefHeight="270.0" prefWidth="648.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.usp.icmc.controller.mainSceneController">
    <children>
       <HBox alignment="CENTER">
          <children>
@@ -60,7 +61,9 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <ComboBox fx:id="userSelector" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="&lt;Select an user&gt;" HBox.hgrow="ALWAYS">
+                                     <ComboBox fx:id="userSelector" editable="false" maxHeight="1.7976931348623157E308"
+                                               maxWidth="1.7976931348623157E308" promptText="&lt;Select an user&gt;"
+                                               HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -114,7 +117,9 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <ComboBox fx:id="bookSelector" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="&lt;Select an book&gt;" HBox.hgrow="ALWAYS">
+                                     <ComboBox fx:id="bookSelector" editable="false" maxHeight="1.7976931348623157E308"
+                                               maxWidth="1.7976931348623157E308" promptText="&lt;Select an book&gt;"
+                                               HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
