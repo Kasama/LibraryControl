@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox xmlns="http://javafx.com/javafx/8" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1">
    <!--fx:controller="com.usp.icmc.controller.NewBookDialog">-->
    <children>
       <HBox alignment="CENTER">

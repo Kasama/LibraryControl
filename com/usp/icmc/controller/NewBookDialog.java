@@ -26,6 +26,8 @@ public class NewBookDialog extends Dialog<Book> {
             getClass().getResource("../view/newBookDialog.fxml")
         );
         loader.setController(this);
+        this.getDialogPane().getStylesheets()
+            .add("com/usp/icmc/view/style.css");
 
         ButtonType buttonCancel = new ButtonType(
             "Cancel", ButtonBar.ButtonData.CANCEL_CLOSE

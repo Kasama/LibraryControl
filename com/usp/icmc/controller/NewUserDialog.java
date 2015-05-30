@@ -26,6 +26,8 @@ public class NewUserDialog extends Dialog<User> {
             getClass().getResource("../view/newUserDialog.fxml")
         );
         loader.setController(this);
+        this.getDialogPane().getStylesheets()
+            .add("com/usp/icmc/view/style.css");
 
         ButtonType buttonCancel = new ButtonType(
             "Cancel", ButtonBar.ButtonData.CANCEL_CLOSE

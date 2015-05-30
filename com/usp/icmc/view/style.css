@@ -1,0 +1,196 @@
+.root {
+    -fx-background-color: #282828;
+    -fx-text-fill: #E8E8E8;
+}
+
+.label {
+    -fx-text-fill: linear-gradient(#A1B56C, #86C1B9);
+}
+
+.date-picker:editable .arrow-button {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #383838;
+}
+
+.date-picker:editable .arrow-button:hover {
+    -fx-background-color: linear-gradient(#585858, #181818);
+}
+
+.date-picker:editable .date-picker-display-node {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #383838;
+}
+
+.combo-box .arrow-button:hover {
+    -fx-background-color: linear-gradient(#585858, #181818);
+}
+
+.combo-box {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.tab-pane:left .tab-header-area .headers-region .tab:left {
+    -fx-background-color: #383838;
+    -fx-text-fill: #E8E8E8;
+}
+
+.tab-pane:left .tab-header-area .headers-region .tab:left .tab-container .tab-label {
+    -fx-text-fill: #E8E8E8;
+}
+
+.tab-pane:left .tab-header-area .headers-region .tab:left:selected {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.tab-pane:left .tab-header-area .tab-header-background {
+    -fx-background-color: #282828;
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-column .label {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-view:row-selection {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-view:row-selection .column-header-background .nested-column-header .table-column .label {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-view:row-selection .column-header-background .nested-column-header .table-column {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-view:row-selection .column-header-background .filler {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.table-view .table-column .cell:selected {
+    -fx-background-color: #181818;
+    -fx-text-fill: #e8e8e8;
+}
+
+.table-view .cell:selected {
+    -fx-background-color: #181818;
+    -fx-text-fill: #e8e8e8;
+}
+
+.table-view .cell {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.list-cell:selected {
+    -fx-background-color: linear-gradient(#585858, #181818);
+    -fx-text-fill: #E8E8E8;
+}
+
+.list-cell {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.list-view {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.text-field {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.text-area {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.text-area:focused {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.text-area .content {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.radio-button {
+    -fx-text-fill: #86C1B9;
+}
+
+.button {
+    -fx-background-color: #7CAFC2;
+    /*-fx-background-color: linear-gradient(#7CAFC2, #BA8BAF);*/
+    -fx-text-fill: #383838;
+}
+
+.button:hover {
+    /*-fx-background-color: linear-gradient(#86C1B9, #BA8BAF);*/
+    -fx-background-color: #86C1B9;
+}
+
+.separator .line {
+    -fx-background: #181818;
+    -fx-border-width: 0.083333em; /* 1 */
+}
+
+.separator:vertical .line {
+    -fx-background-color: null;
+    -fx-padding: 0.0em 0.083333em 0.0em 0.0em; /* 0 1 0 0 */
+}
+
+.dialog-pane .button {
+    -fx-background-color: #7CAFC2;
+    /*-fx-background-color: linear-gradient(#7CAFC2, #BA8BAF);*/
+    -fx-text-fill: #383838;
+}
+
+.dialog-pane .button:hover {
+    /*-fx-background-color: linear-gradient(#86C1B9, #BA8BAF);*/
+    -fx-background-color: #86C1B9;
+}
+
+.dialog-pane .text-field {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.dialog-pane .text-area {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.dialog-pane .text-area:focused {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.dialog-pane .text-area .content {
+    -fx-background-color: #585858;
+    -fx-text-fill: #E8E8E8;
+}
+
+.dialog-pane .root {
+    -fx-background-color: #282828;
+    -fx-text-fill: #E8E8E8;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #B8B8B8;
+}
+

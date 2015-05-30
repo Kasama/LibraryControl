@@ -74,8 +74,8 @@ public class Library implements Observer {
                     tokens ->
                         addBook(
                             new Book(
-                                tokens[0],
                                 tokens[1],
+                                tokens[0],
                                 Boolean.parseBoolean(tokens[2]),
                                 Long.parseLong(tokens[3]),
                                 Boolean.parseBoolean(tokens[4])

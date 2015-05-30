@@ -87,6 +87,14 @@ public class mainSceneController implements Initializable {
     private void removeUser() {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
+        if (user == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a user");
+            alert.setHeaderText("No user selected!");
+            alert.setContentText("Please select a user to remove");
+            alert.show();
+            return;
+        }
         User u = library.getUser(user.getID());
         if (u.getBorrowedBooks().size() != 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -452,6 +460,7 @@ public class mainSceneController implements Initializable {
     public void filterComboBox() {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
+        if (user == null) return;
         User u = library.getUser(user.getID());
         ObservableList<ObservableBook> boxList;
         boxList = FXCollections.observableArrayList();
