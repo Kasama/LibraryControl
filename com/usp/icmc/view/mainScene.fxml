@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="270.0" prefWidth="648.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8"
+<VBox prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.usp.icmc.controller.mainSceneController">
    <children>
       <HBox alignment="CENTER">
@@ -39,11 +39,11 @@
                                 <columns>
                                     <TableColumn fx:id="tableBookID" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0"
                                                  text="ID"/>
-                                    <TableColumn fx:id="tableBookAuthor" minWidth="100.0" prefWidth="105.0"
+                                    <TableColumn fx:id="tableBookAuthor" minWidth="100.0" prefWidth="203.0"
                                                  text="Author"/>
-                                    <TableColumn fx:id="tableBookTitle" prefWidth="192.0" text="Title"/>
-                                    <TableColumn fx:id="tableBookType" minWidth="0.0" prefWidth="111.0" text="Type"/>
-                                    <TableColumn fx:id="tableBookStatus" minWidth="0.0" text="Status"/>
+                                    <TableColumn fx:id="tableBookTitle" prefWidth="245.0" text="Title"/>
+                                    <TableColumn fx:id="tableBookType" minWidth="0.0" prefWidth="83.0" text="Type"/>
+                                    <TableColumn fx:id="tableBookStatus" minWidth="0.0" prefWidth="91.0" text="Status"/>
                                 </columns>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
@@ -56,14 +56,15 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#removeBook" text="-">
+                                     <Button mnemonicParsing="false" onAction="#removeBook" prefHeight="25.0"
+                                             prefWidth="25.0" text="-">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
                                      <ComboBox fx:id="userSelector" editable="false" maxHeight="1.7976931348623157E308"
                                                maxWidth="1.7976931348623157E308" promptText="&lt;Select an user&gt;"
-                                               HBox.hgrow="ALWAYS">
+                                               visibleRowCount="3" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -101,10 +102,10 @@
                                  <columns>
                                      <TableColumn fx:id="tableUserID" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0"
                                                   text="ID"/>
-                                     <TableColumn fx:id="tableUserName" minWidth="100.0" prefWidth="105.0" text="Name"/>
-                                     <TableColumn fx:id="tableUserBorrowed" prefWidth="101.0" text="Borrowed"/>
-                                     <TableColumn fx:id="tableUserType" minWidth="0.0" prefWidth="87.0" text="Type"/>
-                                     <TableColumn fx:id="tableUserStatus" prefWidth="92.0" text="Status"/>
+                                     <TableColumn fx:id="tableUserName" minWidth="100.0" prefWidth="319.0" text="Name"/>
+                                     <TableColumn fx:id="tableUserBorrowed" prefWidth="114.0" text="Borrowed"/>
+                                     <TableColumn fx:id="tableUserType" minWidth="0.0" prefWidth="96.0" text="Type"/>
+                                     <TableColumn fx:id="tableUserStatus" prefWidth="93.0" text="Status"/>
                                  </columns>
                                  <VBox.margin>
                                     <Insets left="5.0" right="5.0" />
@@ -112,19 +113,21 @@
                               </TableView>
                               <HBox>
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#addNewUser" text="+">
+                                     <Button mnemonicParsing="false" onAction="#addNewUser" prefHeight="25.0"
+                                             prefWidth="25.0" text="+">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#removeUser" text="-">
+                                     <Button mnemonicParsing="false" onAction="#removeUser" prefHeight="25.0"
+                                             prefWidth="25.0" text="-">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
                                      <ComboBox fx:id="bookSelector" editable="false" maxHeight="1.7976931348623157E308"
                                                maxWidth="1.7976931348623157E308" promptText="&lt;Select book&gt;"
-                                               HBox.hgrow="ALWAYS">
+                                               visibleRowCount="3" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>

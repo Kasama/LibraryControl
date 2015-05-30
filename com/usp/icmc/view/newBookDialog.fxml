@@ -60,7 +60,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </VBox.margin>
       </Label>
-      <HBox alignment="CENTER">
+      <HBox alignment="CENTER_LEFT">
          <children>
             <RadioButton fx:id="radioGeneral" mnemonicParsing="false" selected="true" text="General" HBox.hgrow="ALWAYS">
                 <toggleGroup>
@@ -70,7 +70,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </RadioButton>
-            <Separator visible="false" HBox.hgrow="ALWAYS" />
+            <!--<Separator visible="false" HBox.hgrow="ALWAYS" />-->
             <RadioButton fx:id="radioText" mnemonicParsing="false" text="Text" toggleGroup="$typeSelection" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

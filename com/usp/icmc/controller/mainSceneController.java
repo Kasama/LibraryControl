@@ -89,7 +89,7 @@ public class mainSceneController implements Initializable {
             usersTable.getSelectionModel().getSelectedItem();
         if (user == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Select a user");
+            alert.setTitle("Select an user");
             alert.setHeaderText("No user selected!");
             alert.setContentText("Please select a user to remove");
             alert.show();
@@ -181,6 +181,14 @@ public class mainSceneController implements Initializable {
     private void removeBook() {
         ObservableBook book =
             booksTable.getSelectionModel().getSelectedItem();
+        if (book == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a book");
+            alert.setHeaderText("No book selected!");
+            alert.setContentText("Please select a book to remove");
+            alert.show();
+            return;
+        }
         if (!library.getBook(book.getID()).isAvailableForBorrow()) {
             Alert cannotRemoveDialog = new Alert(Alert.AlertType.ERROR);
             cannotRemoveDialog.setTitle("Could not remove selected Book");
@@ -190,8 +198,8 @@ public class mainSceneController implements Initializable {
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm user removal");
-        alert.setHeaderText("Really want to remove user?");
+        alert.setTitle("Confirm book removal");
+        alert.setHeaderText("Really want to remove this book?");
         alert.setContentText(
             "Title: " + book.getTitle() + " ID:" + book.getID()
         );
@@ -402,6 +410,14 @@ public class mainSceneController implements Initializable {
 
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
+        if (user == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a user");
+            alert.setHeaderText("No user selected!");
+            alert.setContentText("Please select a user to view the books");
+            alert.show();
+            return;
+        }
         User u = library.getUser(user.getID());
         u.getBorrowedBooks().forEach(
             book -> {
@@ -435,6 +451,14 @@ public class mainSceneController implements Initializable {
 
         ObservableBook book =
             booksTable.getSelectionModel().getSelectedItem();
+        if (book == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Select a book");
+            alert.setHeaderText("No book selected!");
+            alert.setContentText("Please select a book to view the log");
+            alert.show();
+            return;
+        }
         Book b = library.getBook(book.getID());
         b.getBorrowLog().forEach(
             logEntry -> {
