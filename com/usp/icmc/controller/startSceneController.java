@@ -175,7 +175,7 @@ public class startSceneController implements Initializable {
                         mainSceneController controller = loader
                             .getController();
                         controller.setLibrary(new Library(path));
-                        controller.initTables();
+                        controller.initComponents();
                         stage.setScene(new Scene(root));
                         stage.setHeight(600);
                         stage.setWidth(800);

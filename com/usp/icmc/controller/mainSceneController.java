@@ -1,12 +1,14 @@
 package com.usp.icmc.controller;
 
+import com.usp.icmc.extra.ObservableBook;
+import com.usp.icmc.extra.ObservableUser;
 import com.usp.icmc.library.Book;
 import com.usp.icmc.library.Library;
 import com.usp.icmc.library.User;
-import com.usp.icmc.extra.ObservableBook;
-import com.usp.icmc.extra.ObservableUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -48,7 +50,9 @@ public class mainSceneController implements Initializable {
     @FXML
     private ComboBox<ObservableBook> bookSelector;
     @FXML
-    private TextField searchBox;
+    private TextField bookSearchBox;
+    @FXML
+    private TextField userSearchBox;
 
     private Library library;
     ObservableList<ObservableUser> userList;
@@ -289,7 +293,7 @@ public class mainSceneController implements Initializable {
         userList.remove(library.getUsers().indexOf(user));
     }
 
-    public void initTables() {
+    public void initComponents() {
         userList = FXCollections.observableArrayList();
 
         userList.addAll(
@@ -299,7 +303,35 @@ public class mainSceneController implements Initializable {
                 .collect(Collectors.toList())
         );
 
-        usersTable.setItems(userList);
+        FilteredList<ObservableUser> userFilteredList;
+        userFilteredList = new FilteredList<>(userList, u -> true);
+
+        userSearchBox.textProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                userFilteredList.setPredicate(
+                    user -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseValue = newValue.toLowerCase();
+                        return user.getName().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               user.getType().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               user.getStatus().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               String.valueOf(user.getID())
+                                   .contains(lowerCaseValue) ||
+                               String.valueOf(user.getBorrowed())
+                                   .contains(lowerCaseValue);
+                    }
+                );
+            }
+        );
+
+        SortedList<ObservableUser> sortedUsers;
+        sortedUsers = new SortedList<>(userFilteredList);
+
+        usersTable.setItems(sortedUsers);
 
         tableUserID.setCellValueFactory(
             cellData -> cellData.getValue().IDProperty()
@@ -326,7 +358,36 @@ public class mainSceneController implements Initializable {
                 .collect(Collectors.toList())
         );
 
-        booksTable.setItems(bookList);
+        FilteredList<ObservableBook> bookFilteredList;
+        bookFilteredList = new FilteredList<>(bookList, b -> true);
+
+        bookSearchBox.textProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                bookFilteredList.setPredicate(
+                    book -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseValue = newValue.toLowerCase();
+                        return book.getAuthor().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               book.getStatus().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               book.getType().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               book.getTitle().toLowerCase()
+                                   .contains(lowerCaseValue) ||
+                               String.valueOf(book.getID())
+                                   .contains(lowerCaseValue);
+
+                    }
+                );
+            }
+        );
+
+        SortedList<ObservableBook> sortedBooks;
+        sortedBooks = new SortedList<>(bookFilteredList);
+
+        booksTable.setItems(sortedBooks);
 
         tableBookID.setCellValueFactory(
             cellData -> cellData.getValue().IDProperty()
