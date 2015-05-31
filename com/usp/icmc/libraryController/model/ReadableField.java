@@ -1,8 +1,5 @@
-package com.usp.icmc.library;
+package com.usp.icmc.libraryController.model;
 
-/**
- * Created by roberto on 26/05/15.
- */
 @FunctionalInterface
 interface ReadableField {
     void read(String[] tokens);

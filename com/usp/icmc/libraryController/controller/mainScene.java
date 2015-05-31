@@ -1,10 +1,8 @@
-package com.usp.icmc.controller;
+package com.usp.icmc.libraryController.controller;
 
-import com.usp.icmc.extra.ObservableBook;
-import com.usp.icmc.extra.ObservableUser;
-import com.usp.icmc.library.Book;
-import com.usp.icmc.library.Library;
-import com.usp.icmc.library.User;
+import com.usp.icmc.libraryController.model.Book;
+import com.usp.icmc.libraryController.model.Library;
+import com.usp.icmc.libraryController.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -19,7 +17,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class mainSceneController implements Initializable {
+public class mainScene implements Initializable {
 
     @FXML
     private TableView<ObservableUser> usersTable;
@@ -92,7 +90,10 @@ public class mainSceneController implements Initializable {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
         if (user == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select an user");
             alert.setHeaderText("No user selected!");
             alert.setContentText("Please select a user to remove");
@@ -101,14 +102,21 @@ public class mainSceneController implements Initializable {
         }
         User u = library.getUser(user.getID());
         if (u.getBorrowedBooks().size() != 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("User has books");
             alert.setHeaderText("The selected user cannot be removed!");
             alert.setContentText("The user has one or more books");
             alert.showAndWait();
             return;
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        com.usp.icmc.libraryController.controller.Alert
+            alert = new com.usp.icmc.libraryController.controller.Alert(
+            com.usp.icmc.libraryController.controller.Alert.AlertType
+                .CONFIRMATION
+        );
         alert.setTitle("Confirm user removal");
         alert.setHeaderText("Really want to remove user?");
         alert.setContentText("User: " + user.getName() + " ID:" + user.getID());
@@ -133,14 +141,20 @@ public class mainSceneController implements Initializable {
             booksTable.getSelectionModel().getSelectedItem();
         ObservableUser u = userSelector.getValue();
         if (u == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a user");
             alert.setHeaderText("No user selected!");
             alert.setContentText("Please select a user from whom to borrow");
             alert.show();
             return;
         } else if (b == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a book");
             alert.setHeaderText("No book selected!");
             alert.setContentText("Please select a book to borrow");
@@ -152,7 +166,10 @@ public class mainSceneController implements Initializable {
         user = library.getUser(u.getID());
 
         if (!library.borrowBook(user, book)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Not permitted");
             alert.setHeaderText("Invalid operation!");
             alert.setContentText("This user cannot borrow this book");
@@ -186,7 +203,10 @@ public class mainSceneController implements Initializable {
         ObservableBook book =
             booksTable.getSelectionModel().getSelectedItem();
         if (book == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a book");
             alert.setHeaderText("No book selected!");
             alert.setContentText("Please select a book to remove");
@@ -194,14 +214,21 @@ public class mainSceneController implements Initializable {
             return;
         }
         if (!library.getBook(book.getID()).isAvailableForBorrow()) {
-            Alert cannotRemoveDialog = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                cannotRemoveDialog
+                = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             cannotRemoveDialog.setTitle("Could not remove selected Book");
             cannotRemoveDialog.setHeaderText("Failed to remove Book");
             cannotRemoveDialog.setContentText("The selected book is borrowed!");
             cannotRemoveDialog.show();
             return;
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        com.usp.icmc.libraryController.controller.Alert
+            alert = new com.usp.icmc.libraryController.controller.Alert(
+            com.usp.icmc.libraryController.controller.Alert.AlertType.CONFIRMATION
+        );
         alert.setTitle("Confirm book removal");
         alert.setHeaderText("Really want to remove this book?");
         alert.setContentText(
@@ -226,14 +253,20 @@ public class mainSceneController implements Initializable {
             usersTable.getSelectionModel().getSelectedItem();
         ObservableBook b = bookSelector.getValue();
         if (u == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a user");
             alert.setHeaderText("No user selected!");
             alert.setContentText("Please select a user from whom to return");
             alert.show();
             return;
         } else if (b == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a book");
             alert.setHeaderText("No book selected!");
             alert.setContentText("Please select a book to return");
@@ -245,7 +278,10 @@ public class mainSceneController implements Initializable {
         user = library.getUser(u.getID());
 
         if (!library.returnBook(user, book)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Not permitted");
             alert.setHeaderText("Invalid operation!");
             alert.setContentText("This user cannot return this book");
@@ -386,6 +422,7 @@ public class mainSceneController implements Initializable {
 
         SortedList<ObservableBook> sortedBooks;
         sortedBooks = new SortedList<>(bookFilteredList);
+        // TODO bind comparator
 
         booksTable.setItems(sortedBooks);
 
@@ -438,10 +475,10 @@ public class mainSceneController implements Initializable {
             new StringConverter<ObservableBook>() {
                 @Override
                 public String toString(ObservableBook book) {
-                    //                    if (book == null)
-                    //                        return "";
-                    //                    else
-                    return book.toString();
+                    if (book == null)
+                        return "";
+                    else
+                        return book.toString();
                 }
 
                 @Override
@@ -472,7 +509,10 @@ public class mainSceneController implements Initializable {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
         if (user == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a user");
             alert.setHeaderText("No user selected!");
             alert.setContentText("Please select a user to view the books");
@@ -513,13 +553,25 @@ public class mainSceneController implements Initializable {
         ObservableBook book =
             booksTable.getSelectionModel().getSelectedItem();
         if (book == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Select a book");
             alert.setHeaderText("No book selected!");
             alert.setContentText("Please select a book to view the log");
             alert.show();
             return;
         }
+        sb.append("Book id: ");
+        sb.append(book.getID());
+        sb.append("\nAuthor: ");
+        sb.append(book.getAuthor());
+        sb.append("\nTitle: ");
+        sb.append(book.getTitle());
+        sb.append("\nType: ");
+        sb.append(book.getType());
+        sb.append("\n\n\n");
         Book b = library.getBook(book.getID());
         b.getBorrowLog().forEach(
             logEntry -> {

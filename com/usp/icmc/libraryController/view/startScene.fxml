@@ -9,7 +9,7 @@
 
 <VBox prefHeight="521.0" prefWidth="583.0" xmlns="http://javafx.com/javafx/8" stylesheets="@style.css"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.usp.icmc.controller.startSceneController">
+      fx:controller="com.usp.icmc.libraryController.controller.startScene">
    <children>
       <HBox alignment="CENTER">
          <children>

@@ -1,10 +1,10 @@
-package com.usp.icmc.controller;
+package com.usp.icmc.libraryController.controller;
 
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.usp.icmc.library.Library;
-import com.usp.icmc.library.TimeController;
+import com.usp.icmc.libraryController.model.Library;
+import com.usp.icmc.libraryController.model.TimeController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -25,7 +25,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
-public class startSceneController implements Initializable {
+public class startScene extends Parent implements Initializable {
 
     @FXML
     Button add;
@@ -52,7 +52,11 @@ public class startSceneController implements Initializable {
                 while ((tokens = csvReader.readNext()) != null)
                     libraryListElements.add(tokens[0]);
             } catch (IOException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                com.usp.icmc.libraryController.controller.Alert
+                    alert = new com.usp.icmc.libraryController.controller.Alert(
+                    com.usp.icmc.libraryController.controller.Alert.AlertType
+                        .ERROR
+                );
                 alert.setTitle("Fatal error!");
                 alert.setHeaderText("A file read exception was reach");
                 alert.setContentText("Check your read/write permissions");
@@ -68,7 +72,7 @@ public class startSceneController implements Initializable {
     @FXML
     private void addNewLibrary(Event e) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select a folder containing a library");
+        directoryChooser.setTitle("Select a folder containing a model");
         directoryChooser.setInitialDirectory(new File("."));
         File selectedDirectory;
         selectedDirectory = directoryChooser.showDialog(
@@ -91,7 +95,10 @@ public class startSceneController implements Initializable {
                 csvWriter.flush();
             }
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            com.usp.icmc.libraryController.controller.Alert
+                alert = new com.usp.icmc.libraryController.controller.Alert(
+                com.usp.icmc.libraryController.controller.Alert.AlertType.ERROR
+            );
             alert.setTitle("Fatal error!");
             alert.setHeaderText("A file read exception was reach");
             alert.setContentText("Check your read/write permissions");
@@ -138,8 +145,12 @@ public class startSceneController implements Initializable {
                         )
                         .count();
                     if (l != 5) {
-                        Alert confirmCreateNewLibrary = new Alert(
-                            Alert.AlertType.CONFIRMATION,
+                        com.usp.icmc.libraryController.controller.Alert
+                            confirmCreateNewLibrary
+                            = new com.usp.icmc.libraryController.controller
+                            .Alert(
+                            com.usp.icmc.libraryController.controller.Alert
+                                .AlertType.CONFIRMATION,
                             "Do you want to create a new one?",
                             ButtonType.NO,
                             ButtonType.YES
@@ -172,7 +183,7 @@ public class startSceneController implements Initializable {
                             (Stage) ((Button) e.getSource()).getScene()
                                 .getWindow()
                         );
-                        mainSceneController controller = loader
+                        mainScene controller = loader
                             .getController();
                         controller.setLibrary(new Library(path));
                         controller.initComponents();
@@ -180,7 +191,13 @@ public class startSceneController implements Initializable {
                         stage.setHeight(600);
                         stage.setWidth(800);
                     } catch (IOException ex) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        com.usp.icmc.libraryController.controller.Alert
+                            alert
+                            = new com.usp.icmc.libraryController.controller
+                            .Alert(
+                            com.usp.icmc.libraryController.controller.Alert
+                                .AlertType.ERROR
+                        );
                         alert.setTitle("Fatal error!");
                         alert.setHeaderText("Could not find GUI file");
                         alert.setContentText(
@@ -195,5 +212,4 @@ public class startSceneController implements Initializable {
         }
 
     }
-
 }

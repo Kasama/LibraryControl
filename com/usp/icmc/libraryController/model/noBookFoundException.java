@@ -1,4 +1,4 @@
-package com.usp.icmc.library;
+package com.usp.icmc.libraryController.model;
 
 public class noBookFoundException extends RuntimeException {
 

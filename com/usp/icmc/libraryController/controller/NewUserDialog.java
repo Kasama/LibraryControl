@@ -1,6 +1,6 @@
-package com.usp.icmc.controller;
+package com.usp.icmc.libraryController.controller;
 
-import com.usp.icmc.library.Book;
+import com.usp.icmc.libraryController.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,22 +8,22 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class NewBookDialog extends Dialog<Book> {
+public class NewUserDialog extends Dialog<User> {
 
     @FXML
-    public TextField title;
+    private ToggleGroup typeSelection;
     @FXML
-    public TextField author;
+    private TextField userName;
     @FXML
-    public RadioButton radioGeneral;
+    private RadioButton radioProfessor;
     @FXML
-    public RadioButton radioText;
+    private RadioButton radioStudent;
     @FXML
-    public ToggleGroup typeSelection;
+    private RadioButton radioCommunityMember;
 
-    public NewBookDialog() {
+    public NewUserDialog() {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("../view/newBookDialog.fxml")
+            getClass().getResource("../view/newUserDialog.fxml")
         );
         loader.setController(this);
         this.getDialogPane().getStylesheets()
@@ -46,27 +46,29 @@ public class NewBookDialog extends Dialog<Book> {
             buttonCancel, buttonOK
         );
         this.setResultConverter(
-            param -> param.equals(buttonOK) ?
-                     new Book(
-                         NewBookDialog.this.getBookTitle(),
-                         NewBookDialog.this.getBookAuthor(),
-                         NewBookDialog.this.getOption()
-                     ) : null
+            param ->
+                param.equals(buttonOK) ?
+                new User(
+                    this.getUserName(), this.getOption()
+                ) : null
         );
     }
 
-    public String getBookTitle() {
-        return title.getText();
+    public String getUserName() {
+        return userName.getText();
     }
 
-    public String getBookAuthor() {
-        return author.getText();
-    }
-
-    public boolean getOption() {
+    public int getOption() {
         RadioButton selected = (
             (RadioButton) typeSelection.getSelectedToggle()
         );
-        return selected.equals(radioGeneral);
+        if (selected.equals(radioProfessor))
+            return User.PROFESSOR;
+        else if (selected.equals(radioStudent))
+            return User.STUDENT;
+        else if (selected.equals(radioCommunityMember))
+            return User.COMMUNITY_MEMBER;
+        else
+            return -1;
     }
 }

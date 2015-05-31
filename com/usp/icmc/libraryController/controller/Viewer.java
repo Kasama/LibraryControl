@@ -1,4 +1,4 @@
-package com.usp.icmc.controller;
+package com.usp.icmc.libraryController.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

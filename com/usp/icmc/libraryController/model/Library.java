@@ -1,4 +1,4 @@
-package com.usp.icmc.library;
+package com.usp.icmc.libraryController.model;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;

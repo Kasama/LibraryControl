@@ -1,4 +1,4 @@
-package com.usp.icmc.extra;
+package com.usp.icmc.libraryController;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("../view/startScene.fxml")
+            getClass().getResource("view/startScene.fxml")
         );
         Parent root = loader.load();
         primaryStage.setTitle("Library Controller");

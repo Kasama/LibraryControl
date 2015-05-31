@@ -1,6 +1,6 @@
-package com.usp.icmc.extra;
+package com.usp.icmc.libraryController.controller;
 
-import com.usp.icmc.library.User;
+import com.usp.icmc.libraryController.model.User;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;

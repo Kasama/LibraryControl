@@ -1,4 +1,4 @@
-package com.usp.icmc.library;
+package com.usp.icmc.libraryController.model;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

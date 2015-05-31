@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.usp.icmc.controller.mainSceneController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.usp.icmc.libraryController.controller.mainScene">
    <children>
       <HBox alignment="CENTER">
          <children>
