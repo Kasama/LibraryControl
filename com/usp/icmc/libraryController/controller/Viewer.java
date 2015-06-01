@@ -22,7 +22,7 @@ public class Viewer extends Dialog<ButtonType> {
         loader.setController(this);
         this.setResizable(true);
         this.getDialogPane().getStylesheets()
-            .add("com/usp/icmc/view/style.css");
+            .add("com/usp/icmc/libraryController/view/style.css");
         ButtonType buttonOK = new ButtonType(
             "OK", ButtonBar.ButtonData.OK_DONE
         );

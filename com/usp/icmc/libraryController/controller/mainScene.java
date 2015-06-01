@@ -290,7 +290,7 @@ public class mainScene implements Initializable {
         }
         u.setBorrowed(u.getBorrowed() - 1);
         syncObservableBooks(book);
-        filterComboBox();
+        filterBooksComboBox();
         new Thread(
             () -> library.storeToDataDirectory(library.getDataDirectory())
         ).start();
@@ -366,6 +366,7 @@ public class mainScene implements Initializable {
 
         SortedList<ObservableUser> sortedUsers;
         sortedUsers = new SortedList<>(userFilteredList);
+        sortedUsers.comparatorProperty().bind(usersTable.comparatorProperty());
 
         usersTable.setItems(sortedUsers);
 
@@ -422,7 +423,7 @@ public class mainScene implements Initializable {
 
         SortedList<ObservableBook> sortedBooks;
         sortedBooks = new SortedList<>(bookFilteredList);
-        // TODO bind comparator
+        sortedBooks.comparatorProperty().bind(booksTable.comparatorProperty());
 
         booksTable.setItems(sortedBooks);
 
@@ -594,7 +595,28 @@ public class mainScene implements Initializable {
         view.show();
     }
 
-    public void filterComboBox() {
+    public void filterUserComboBox() {
+        ObservableBook book =
+            booksTable.getSelectionModel().getSelectedItem();
+        if (book == null) return;
+        Book b = library.getBook(book.getID());
+        ObservableList<ObservableUser> boxList;
+        boxList = FXCollections.observableArrayList();
+        boxList.addAll(
+            userList
+                .stream()
+                .filter(
+                    u -> {
+                        User user = library.getUser(u.getID());
+                        return library.canBorrowBook(user, b);
+                    }
+                )
+                .collect(Collectors.toList())
+        );
+        userSelector.setItems(boxList);
+    }
+
+    public void filterBooksComboBox() {
         ObservableUser user =
             usersTable.getSelectionModel().getSelectedItem();
         if (user == null) return;
