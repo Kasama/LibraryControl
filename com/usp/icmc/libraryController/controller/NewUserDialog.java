@@ -23,11 +23,13 @@ public class NewUserDialog extends Dialog<User> {
 
     public NewUserDialog() {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("../view/newUserDialog.fxml")
+            getClass().getResource(
+                "/com/usp/icmc/libraryController/view/newUserDialog.fxml"
+            )
         );
         loader.setController(this);
         this.getDialogPane().getStylesheets()
-            .add("com/usp/icmc/libraryController/view/style.css");
+            .add("/com/usp/icmc/libraryController/view/style.css");
 
         ButtonType buttonCancel = new ButtonType(
             "Cancel", ButtonBar.ButtonData.CANCEL_CLOSE

@@ -23,11 +23,13 @@ public class NewBookDialog extends Dialog<Book> {
 
     public NewBookDialog() {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("../view/newBookDialog.fxml")
+            getClass().getResource(
+                "/com/usp/icmc/libraryController/view/newBookDialog.fxml"
+            )
         );
         loader.setController(this);
         this.getDialogPane().getStylesheets()
-            .add("com/usp/icmc/libraryController/view/style.css");
+            .add("/com/usp/icmc/libraryController/view/style.css");
 
         ButtonType buttonCancel = new ButtonType(
             "Cancel", ButtonBar.ButtonData.CANCEL_CLOSE

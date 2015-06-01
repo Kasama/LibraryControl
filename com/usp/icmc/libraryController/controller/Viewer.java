@@ -17,12 +17,13 @@ public class Viewer extends Dialog<ButtonType> {
     public Viewer(String labelString, String text) {
 
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("../view/viewer.fxml")
+            getClass()
+                .getResource("/com/usp/icmc/libraryController/view/viewer.fxml")
         );
         loader.setController(this);
         this.setResizable(true);
         this.getDialogPane().getStylesheets()
-            .add("com/usp/icmc/libraryController/view/style.css");
+            .add("/com/usp/icmc/libraryController/view/style.css");
         ButtonType buttonOK = new ButtonType(
             "OK", ButtonBar.ButtonData.OK_DONE
         );
